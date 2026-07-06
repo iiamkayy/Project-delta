@@ -1,69 +1,190 @@
--- start of the fuckass script
+-- =====================================================================
+-- PROJECT DELTA  -  V3 -IIamkayy + Sapphire  !!! 
+-- Cred OP of this script is tarkov_killa
+-- Player ESP (3D) | NPC ESP + Aimbot | World ESP | Inventory Viewer
+-- Boss Tracker | Loot Finders | Mod Alert | Crosshair | Watermark
+--  / Fullbright | Config Save/Load
+--
+-- NOTE: If you re-run this script, UNLOAD the old one first.
+-- Loading it twice causes duplicate menu IDs -> flickering / colour jitter.
+-- =====================================================================
 
+-- Load guard: stops a second copy from registering duplicate menu elements.
+-- (reset flag so re-runs after unload always work)
+_G.PROJECT_DELTA_LOADED = nil
 
+-- =====================================================================
+-- MENU SETUP  (every ID registered exactly once)
+-- =====================================================================
 menu.add_tab("Project Delta", "D", "full")
-
 
 menu.add_group("Project Delta", "Player ESP")
 menu.add_checkbox("Project Delta", "Player ESP", "delta_player_enabled", "Enable Player ESP", false)
-menu.add_checkbox("Project Delta", "Player ESP", "delta_player_dist", "Player Distance", false, { parent = "delta_player_enabled", colorpicker = {1, 0.4, 0.4, 1} })
-menu.add_slider_int("Project Delta", "Player ESP", "delta_player_range", "Player Range (m)", 10, 1500, 500, { parent = "delta_player_enabled" })
-menu.add_checkbox("Project Delta", "Player ESP", "delta_inv_enabled", "Inventory Checker", false, { key = 2, show_mode = false })
-menu.add_combo("Project Delta", "Player ESP", "delta_inv_mode", "Show Mode", { "Always", "Toggle", "Hold" }, 0, { parent = "delta_inv_enabled" })
-menu.add_checkbox("Project Delta", "Player ESP", "delta_inv_show_guns", "Show Guns", true, { parent = "delta_inv_enabled" })
-menu.add_slider_int("Project Delta", "Player ESP", "delta_inv_max_guns", "Max Gun Lines", 1, 20, 10, { parent = "delta_inv_enabled" })
-menu.add_checkbox("Project Delta", "Player ESP", "delta_inv_show_armor", "Show Armor", true, { parent = "delta_inv_enabled" })
-menu.add_slider_int("Project Delta", "Player ESP", "delta_inv_max_armor", "Max Armor Lines", 1, 20, 10, { parent = "delta_inv_enabled" })
-menu.add_checkbox("Project Delta", "Player ESP", "delta_inv_show_val", "Show Valuables", false, { parent = "delta_inv_enabled" })
-menu.add_slider_int("Project Delta", "Player ESP", "delta_inv_max_val", "Max Valuable Lines", 1, 20, 10, { parent = "delta_inv_enabled" })
-menu.add_checkbox("Project Delta", "Player ESP", "delta_inv_show_other", "Show Other", false, { parent = "delta_inv_enabled" })
-menu.add_slider_int("Project Delta", "Player ESP", "delta_inv_max_other", "Max Other Lines", 1, 50, 5, { parent = "delta_inv_enabled" })
+menu.add_checkbox("Project Delta", "Player ESP", "delta_player_box", "3D Box", false, { parent = "delta_player_enabled", colorpicker = {1, 0.4, 0.4, 1} })
+menu.add_combo("Project Delta", "Player ESP", "delta_player_box_style", "Box Style", { "Full", "Corner" }, 0, { parent = "delta_player_box" })
+menu.add_checkbox("Project Delta", "Player ESP", "delta_player_skeleton", "Skeleton", false, { parent = "delta_player_enabled", colorpicker = {1, 1, 1, 1} })
+menu.add_checkbox("Project Delta", "Player ESP", "delta_player_health", "Health Bar", false, { parent = "delta_player_enabled" })
+menu.add_checkbox("Project Delta", "Player ESP", "delta_player_name", "Name", false, { parent = "delta_player_enabled", colorpicker = {1, 1, 1, 1} })
+menu.add_checkbox("Project Delta", "Player ESP", "delta_player_dist", "Distance", false, { parent = "delta_player_enabled", colorpicker = {0.7, 0.7, 0.7, 1} })
+menu.add_checkbox("Project Delta", "Player ESP", "delta_player_tracers", "Tracers", false, { parent = "delta_player_enabled", colorpicker = {1, 0.3, 0.3, 0.6} })
+menu.add_slider_int("Project Delta", "Player ESP", "delta_player_range", "Range (m)", 10, 1500, 500, { parent = "delta_player_enabled" })
 
-
-menu.add_group("Project Delta", "NPC ESP / Aimbot", 0, true)
+menu.add_group("Project Delta", "NPC ESP / Aimbot")
 menu.add_checkbox("Project Delta", "NPC ESP / Aimbot", "delta_npc_enabled", "Enable NPC ESP", false)
-menu.add_checkbox("Project Delta", "NPC ESP / Aimbot", "delta_npc_box", "Box", false, { parent = "delta_npc_enabled", colorpicker = {1, 0.3, 0.3, 1} })
+menu.add_checkbox("Project Delta", "NPC ESP / Aimbot", "delta_npc_box", "3D Box", false, { parent = "delta_npc_enabled", colorpicker = {1, 0.3, 0.3, 1} })
+menu.add_combo("Project Delta", "NPC ESP / Aimbot", "delta_npc_box_style", "Box Style", { "Full", "Corner" }, 0, { parent = "delta_npc_box" })
+menu.add_checkbox("Project Delta", "NPC ESP / Aimbot", "delta_npc_skeleton", "Skeleton", false, { parent = "delta_npc_enabled", colorpicker = {1, 1, 1, 1} })
 menu.add_checkbox("Project Delta", "NPC ESP / Aimbot", "delta_npc_health", "Health Bar", false, { parent = "delta_npc_enabled" })
 menu.add_checkbox("Project Delta", "NPC ESP / Aimbot", "delta_npc_name", "Name", false, { parent = "delta_npc_enabled", colorpicker = {1, 0.3, 0.3, 1} })
-menu.add_checkbox("Project Delta", "NPC ESP / Aimbot", "delta_npc_dist", "NPC Distance", false, { parent = "delta_npc_enabled", colorpicker = {0.7, 0.7, 0.7, 1} })
-menu.add_checkbox("Project Delta", "NPC ESP / Aimbot", "delta_npc_skeleton", "Skeleton", false, { parent = "delta_npc_enabled", colorpicker = {1, 1, 1, 1} })
+menu.add_checkbox("Project Delta", "NPC ESP / Aimbot", "delta_npc_dist", "Distance", false, { parent = "delta_npc_enabled", colorpicker = {0.7, 0.7, 0.7, 1} })
 menu.add_slider_int("Project Delta", "NPC ESP / Aimbot", "delta_npc_range", "NPC Range (m)", 10, 600, 140, { parent = "delta_npc_enabled" })
-menu.add_checkbox("Project Delta", "NPC ESP / Aimbot", "delta_npc_aim_enabled", "Enable NPC Aimbot", false, { key = 2, show_mode = false })
+menu.add_checkbox("Project Delta", "NPC ESP / Aimbot", "delta_npc_aim_enabled", "Enable Aimbot", false, { key = 0x02, show_mode = false })
 menu.add_slider_int("Project Delta", "NPC ESP / Aimbot", "delta_npc_aim_fov", "FOV Radius", 50, 500, 150, { parent = "delta_npc_aim_enabled" })
 menu.add_slider_int("Project Delta", "NPC ESP / Aimbot", "delta_npc_aim_smooth", "Smoothing", 1, 20, 5, { parent = "delta_npc_aim_enabled" })
 menu.add_combo("Project Delta", "NPC ESP / Aimbot", "delta_npc_aim_bone", "Target Bone", { "Head", "Chest", "Pelvis" }, 0, { parent = "delta_npc_aim_enabled" })
 menu.add_checkbox("Project Delta", "NPC ESP / Aimbot", "delta_npc_aim_prediction", "Velocity Prediction", false, { parent = "delta_npc_aim_enabled" })
-menu.add_checkbox("Project Delta", "NPC ESP / Aimbot", "delta_npc_aim_draw_fov", "Show FOV Circle", false, { parent = "delta_npc_aim_enabled" })
+menu.add_checkbox("Project Delta", "NPC ESP / Aimbot", "delta_npc_aim_draw_fov", "Show FOV Circle", false, { parent = "delta_npc_aim_enabled", colorpicker = {1, 1, 1, 0.5} })
 
 menu.add_group("Project Delta", "World ESP")
 menu.add_checkbox("Project Delta", "World ESP", "delta_extract_enabled", "Extracts", false, { colorpicker = {0, 1, 0.5, 1} })
+menu.add_checkbox("Project Delta", "World ESP", "delta_extract_box", "3D Box", true, { parent = "delta_extract_enabled" })
 menu.add_slider_int("Project Delta", "World ESP", "delta_extract_range", "Extract Range (m)", 10, 1500, 500, { parent = "delta_extract_enabled" })
 menu.add_checkbox("Project Delta", "World ESP", "delta_container_enabled", "Containers", false, { colorpicker = {0.5, 0.5, 1, 1} })
+menu.add_checkbox("Project Delta", "World ESP", "delta_container_box", "3D Box", true, { parent = "delta_container_enabled" })
 menu.add_checkbox("Project Delta", "World ESP", "delta_container_contents", "Show Contents", false, { parent = "delta_container_enabled" })
 menu.add_slider_int("Project Delta", "World ESP", "delta_container_range", "Container Range (m)", 10, 600, 84, { parent = "delta_container_enabled" })
 menu.add_checkbox("Project Delta", "World ESP", "delta_quest_enabled", "Quest Items", false, { colorpicker = {1, 0.5, 1, 1} })
+menu.add_checkbox("Project Delta", "World ESP", "delta_quest_box", "3D Box", true, { parent = "delta_quest_enabled" })
 menu.add_slider_int("Project Delta", "World ESP", "delta_quest_range", "Quest Range (m)", 10, 1500, 140, { parent = "delta_quest_enabled" })
 menu.add_checkbox("Project Delta", "World ESP", "delta_items_enabled", "Dropped Items", false, { colorpicker = {1, 0.8, 0, 1} })
+menu.add_checkbox("Project Delta", "World ESP", "delta_items_box", "3D Box", true, { parent = "delta_items_enabled" })
 menu.add_slider_int("Project Delta", "World ESP", "delta_items_range", "Item Range (m)", 10, 600, 56, { parent = "delta_items_enabled" })
 menu.add_checkbox("Project Delta", "World ESP", "delta_corpse_enabled", "Corpses", false, { colorpicker = {1, 0.2, 0.2, 1} })
+menu.add_checkbox("Project Delta", "World ESP", "delta_corpse_box", "3D Box", true, { parent = "delta_corpse_enabled" })
+menu.add_checkbox("Project Delta", "World ESP", "delta_corpse_contents", "Show Contents", false, { parent = "delta_corpse_enabled" })
 menu.add_slider_int("Project Delta", "World ESP", "delta_corpse_range", "Corpse Range (m)", 10, 600, 140, { parent = "delta_corpse_enabled" })
 menu.add_checkbox("Project Delta", "World ESP", "delta_claymore_enabled", "Claymores", false, { colorpicker = {1, 0.3, 0.1, 1} })
 menu.add_checkbox("Project Delta", "World ESP", "delta_claymore_names", "Show Name + Distance", false, { parent = "delta_claymore_enabled" })
 menu.add_slider_int("Project Delta", "World ESP", "delta_claymore_range", "Claymore Range (m)", 10, 600, 140, { parent = "delta_claymore_enabled" })
 
-menu.add_group("Project Delta", "Misc", 0, true)
-menu.add_checkbox("Project Delta", "Misc", "delta_boss_enabled", "Enable Boss Tracker", false)
+menu.add_group("Project Delta", "Inventory Viewer")
+menu.add_checkbox("Project Delta", "Inventory Viewer", "delta_inv_enabled", "Inventory Checker", false, { key = 0x02, show_mode = false })
+menu.add_combo("Project Delta", "Inventory Viewer", "delta_inv_mode", "Show Mode", { "Always", "Toggle", "Hold" }, 0, { parent = "delta_inv_enabled" })
+menu.add_checkbox("Project Delta", "Inventory Viewer", "delta_inv_show_guns", "Show Guns", true, { parent = "delta_inv_enabled" })
+menu.add_slider_int("Project Delta", "Inventory Viewer", "delta_inv_max_guns", "Max Gun Lines", 1, 20, 10, { parent = "delta_inv_enabled" })
+menu.add_checkbox("Project Delta", "Inventory Viewer", "delta_inv_show_armor", "Show Armor", true, { parent = "delta_inv_enabled" })
+menu.add_slider_int("Project Delta", "Inventory Viewer", "delta_inv_max_armor", "Max Armor Lines", 1, 20, 10, { parent = "delta_inv_enabled" })
+menu.add_checkbox("Project Delta", "Inventory Viewer", "delta_inv_show_val", "Show Valuables", false, { parent = "delta_inv_enabled" })
+menu.add_slider_int("Project Delta", "Inventory Viewer", "delta_inv_max_val", "Max Valuable Lines", 1, 20, 10, { parent = "delta_inv_enabled" })
+menu.add_checkbox("Project Delta", "Inventory Viewer", "delta_inv_show_other", "Show Other", false, { parent = "delta_inv_enabled" })
+menu.add_slider_int("Project Delta", "Inventory Viewer", "delta_inv_max_other", "Max Other Lines", 1, 50, 5, { parent = "delta_inv_enabled" })
+
+menu.add_group("Project Delta", "Misc")
+menu.add_checkbox("Project Delta", "Misc", "delta_boss_enabled", "Boss Tracker", false)
+menu.add_checkbox("Project Delta", "Misc", "delta_wlf_enabled", "World Loot Finder", false)
+menu.add_checkbox("Project Delta", "Misc", "delta_plf_enabled", "Player Loot Finder", false)
 menu.add_checkbox("Project Delta", "Misc", "delta_mod_alert_enabled", "Mod Alert", false)
-menu.add_combo("Project Delta", "Misc", "delta_mod_alert_mode", "Show Mode", { "Always", "Mods Only" }, 1, { parent = "delta_mod_alert_enabled" })
+menu.add_combo("Project Delta", "Misc", "delta_mod_alert_mode", "Alert Mode", { "Always", "Suspicious Only" }, 1, { parent = "delta_mod_alert_enabled" })
 menu.add_checkbox("Project Delta", "Misc", "delta_watermark_enabled", "Watermark", true)
-menu.add_checkbox("Project Delta", "Misc", "delta_slf_enabled", "Enable Loot Finder", false)
-menu.add_checkbox("Project Delta", "Misc", "delta_norecoil_enabled", "No Recoil", true)
+menu.add_checkbox("Project Delta", "Misc", "delta_fullbright", "Fullbright", false)
+menu.add_checkbox("Project Delta", "Misc", "delta_crosshair", "Custom Crosshair", false)
+menu.add_combo("Project Delta", "Misc", "delta_crosshair_style", "Style", { "Dot", "Cross", "Circle", "Cross + Circle" }, 0, { parent = "delta_crosshair" })
+menu.add_slider_int("Project Delta", "Misc", "delta_crosshair_size", "Size", 1, 30, 5, { parent = "delta_crosshair" })
+menu.add_slider_int("Project Delta", "Misc", "delta_crosshair_thickness", "Thickness", 1, 5, 2, { parent = "delta_crosshair" })
+menu.add_checkbox("Project Delta", "Misc", "delta_crosshair_color", "Use Color", false, { parent = "delta_crosshair", colorpicker = {1, 1, 1, 1} })
+menu.add_checkbox("Project Delta", "Misc", "delta_crosshair_outline", "Show Outline", true, { parent = "delta_crosshair" })
+menu.add_checkbox("Project Delta", "Misc", "delta_no_recoil", "No Recoil / No Spread", false)
+menu.add_checkbox("Project Delta", "Misc", "delta_fire_rate", "Rapid Fire", false)
+menu.add_slider_int("Project Delta", "Misc", "delta_fire_rate_amount", "Fire Rate Speed", 1, 100, 10, { parent = "delta_fire_rate" })
 
 menu.add_group("Project Delta", "Config")
+menu.add_button("Project Delta", "Config", "delta_save_config", "Save Config", function() save_config() end)
+menu.add_button("Project Delta", "Config", "delta_load_config", "Load Config", function() load_config() end)
 
-local sqr = math.sqrt
-local format = string.format
-local CONFIG_NAME = "delta_esp_config.txt"
+-- =====================================================================
+-- CONSTANTS
+-- =====================================================================
+local FONT          = 13
+local FONT_L        = 14
+local TITLE_H       = 24
+local PAD           = 10
+local SEC_H         = 18
+local LINE_H        = 16
+local LINE_H_L      = 20
+local METERS_PER_STUD = 0.28
+
+local BONE_NAMES = {
+    "Head","UpperTorso","LowerTorso",
+    "LeftUpperArm","LeftLowerArm","LeftHand","RightUpperArm","RightLowerArm","RightHand",
+    "LeftUpperLeg","LeftLowerLeg","LeftFoot","RightUpperLeg","RightLowerLeg","RightFoot",
+}
+local BONE_CONNECTIONS = {
+    {"Head","UpperTorso"},{"UpperTorso","LowerTorso"},
+    {"UpperTorso","LeftUpperArm"},{"LeftUpperArm","LeftLowerArm"},{"LeftLowerArm","LeftHand"},
+    {"UpperTorso","RightUpperArm"},{"RightUpperArm","RightLowerArm"},{"RightLowerArm","RightHand"},
+    {"LowerTorso","LeftUpperLeg"},{"LeftUpperLeg","LeftLowerLeg"},{"LeftLowerLeg","LeftFoot"},
+    {"LowerTorso","RightUpperLeg"},{"RightUpperLeg","RightLowerLeg"},{"RightLowerLeg","RightFoot"},
+}
+local BOX_EDGES   = {{1,2},{1,3},{2,4},{3,4},{5,6},{5,7},{6,8},{7,8},{1,5},{2,6},{3,7},{4,8}}
+local CORNER_EDGES= {{1,2},{2,4},{4,3},{3,1},{5,6},{6,8},{8,7},{7,5}}
+local BOX_SIGNS   = {
+    {-1,-1,-1},{1,-1,-1},{-1,1,-1},{1,1,-1},
+    {-1,-1,1},{1,-1,1},{-1,1,1},{1,1,1},
+}
+local AIM_BONES = { [0]="Head", [1]="UpperTorso", [2]="LowerTorso" }
+
+local weapons_list    = {"AsVal","FAL","AKMN","RPG7","M4","PKM","R700","SVD","TFZ98S","Saiga","MP5","MP7","Glock","Deagle","M870"}
+local armor_list      = {"Altyn","FastVisor","HSPV","JPC","QuadNVG","ScavKingHelment","ScavKingVest","IOTV4","TitanShield","DozerArmor","FastMT","Kulon","ZSH","Pasgt"}
+local valuables_list  = {"FlareGun","SPSh44","GPU","Gold50g","GoldWatch","GoldTicket","Mag556Rnd100","Reapir","SOCOM556","RepairKit","Bitcoin","LedX"}
+
+local boss_defs = {
+    { zone = "Sawmill",    name = "Anton"    },
+    { zone = "Factory",    name = "Dozer"    },
+    { zone = "Whisper",    name = "Whisper"  },
+    { zone = "Death",      name = "Death"    },
+    { zone = "ScavCastle", name = "ScavKing" },
+}
+local vehicle_defs = {
+    { name = "MI24V", label = "Mi-24V Hind" },
+    { name = "BTR80", label = "BTR-80"      },
+}
+
+local MOD_NAMES = {
+    ["solter"]=true,["kupczakk"]=true,["nutsock112"]=true,["thecrafter103"]=true,
+    ["forkycheck"]=true,["necanwx"]=true,["kbhgaming480"]=true,["lumivoxi"]=true,
+    ["natan_113"]=true,["ianeyeballs"]=true,["imblu1"]=true,["gribler1"]=true,
+    ["e2equl"]=true,["hhauoli"]=true,["farlan9"]=true,["zondering"]=true,
+    ["strawberry_banana0"]=true,["exp_l0"]=true,["raechevel00"]=true,["yuckey47"]=true,
+    ["shawnybear6"]=true,["deadlymagicaz"]=true,["jannu2010"]=true,["duhacek1112"]=true,
+    ["sparky_deeny"]=true,["aidendenkule13"]=true,["hakaji"]=true,["c7asher"]=true,
+    ["dominik7772"]=true,["atlas_thegamer"]=true,["accldentshappen"]=true,["libertadwar"]=true,
+}
+
+-- shared palette (normalised RGBA)
+local COL = {
+    bg        = { 0.05, 0.05, 0.07, 0.96 },
+    title     = { 0.07, 0.07, 0.10, 1.00 },
+    border    = { 0.18, 0.72, 0.84, 1.00 },
+    accent    = { 0.18, 0.72, 0.84, 1.00 },
+    dim       = { 0.25, 0.25, 0.30, 1.00 },
+    sec_bg    = { 0.08, 0.08, 0.11, 1.00 },
+    sec_line  = { 0.18, 0.72, 0.84, 0.40 },
+    white     = { 1.00, 1.00, 1.00, 1.00 },
+    gun       = { 0.95, 0.30, 0.30, 1.0 },
+    armor     = { 0.18, 0.72, 0.84, 1.0 },
+    val       = { 0.35, 0.90, 0.45, 1.0 },
+    junk      = { 0.45, 0.45, 0.50, 1.0 },
+    alive     = { 0.47, 1.00, 0.63, 1.00 },
+    warn      = { 1.00, 0.78, 0.24, 1.00 },
+    dead      = { 1.00, 0.31, 0.31, 1.00 },
+    none      = { 0.47, 0.47, 0.50, 1.00 },
+    vehicle   = { 1.00, 0.85, 0.20, 1.00 },
+}
+
+-- =====================================================================
+-- CONFIG SYSTEM
+-- =====================================================================
+local CONFIG_NAME = "delta_esp_v3_config.txt"
 
 local function get_config_path()
     local appdata = os.getenv("LOCALAPPDATA")
@@ -71,244 +192,443 @@ local function get_config_path()
     return CONFIG_NAME
 end
 
-local function safe_menu_get(id)
-    local ok, val = pcall(function() return menu.get(id) end)
-    return ok and val or false
-end
-
-local function safe_menu_get_color(id)
-    local ok, col = pcall(function() return menu.get_color(id) end)
-    return ok and col or {1, 1, 1, 1}
-end
-
-local function safe_menu_get_key(id)
-    local ok, key = pcall(function() return menu.get_key(id) end)
-    return ok and key or 0
-end
+local function sg(id)  local ok,v = pcall(function() return menu.get(id) end)       return ok and v or false end
+local function sgc(id) local ok,c = pcall(function() return menu.get_color(id) end) return ok and c or {1,1,1,1} end
+local function sgk(id) local ok,k = pcall(function() return menu.get_key(id) end)   return ok and k or 0 end
 
 local SAVE_ITEMS = {
-    { id = "delta_player_enabled", type = "bool" },
-    { id = "delta_player_dist",    type = "bool", color = true },
-    { id = "delta_player_range",   type = "int" },
-    { id = "delta_extract_enabled", type = "bool", color = true },
-    { id = "delta_extract_range",  type = "int" },
-    { id = "delta_container_enabled", type = "bool", color = true },
-    { id = "delta_container_contents", type = "bool" },
-    { id = "delta_container_range", type = "int" },
-    { id = "delta_quest_enabled",  type = "bool", color = true },
-    { id = "delta_quest_range",    type = "int" },
-    { id = "delta_items_enabled",  type = "bool", color = true },
-    { id = "delta_items_range",    type = "int" },
-    { id = "delta_corpse_enabled", type = "bool", color = true },
-    { id = "delta_corpse_range",   type = "int" },
-    { id = "delta_npc_enabled",    type = "bool" },
-    { id = "delta_npc_box",        type = "bool", color = true },
-    { id = "delta_npc_health",     type = "bool" },
-    { id = "delta_npc_name",       type = "bool", color = true },
-    { id = "delta_npc_dist",       type = "bool", color = true },
-    { id = "delta_npc_skeleton",   type = "bool", color = true },
-    { id = "delta_npc_range",      type = "int" },
-    { id = "delta_npc_aim_enabled", type = "bool", key = true },
-    { id = "delta_npc_aim_fov",    type = "int" },
-    { id = "delta_npc_aim_smooth", type = "int" },
-    { id = "delta_npc_aim_bone",   type = "int" },
-    { id = "delta_npc_aim_prediction", type = "bool" },
-    { id = "delta_npc_aim_draw_fov", type = "bool" },
-    { id = "delta_inv_enabled",    type = "bool" },
-    { id = "delta_inv_mode",       type = "int" },
-    { id = "delta_inv_show_guns",  type = "bool" },
-    { id = "delta_inv_max_guns",   type = "int" },
-    { id = "delta_inv_show_armor", type = "bool" },
-    { id = "delta_inv_max_armor",  type = "int" },
-    { id = "delta_inv_show_val",   type = "bool" },
-    { id = "delta_inv_max_val",    type = "int" },
-    { id = "delta_inv_show_other", type = "bool" },
-    { id = "delta_inv_max_other",  type = "int" },
-    { id = "delta_boss_enabled",   type = "bool" },
-    { id = "delta_claymore_enabled", type = "bool", color = true },
-    { id = "delta_claymore_range", type = "int" },
-    { id = "delta_claymore_names", type = "bool" },
-    { id = "delta_mod_alert_enabled", type = "bool" },
-    { id = "delta_mod_alert_mode", type = "int" },
-    { id = "delta_watermark_enabled", type = "bool" },
-    { id = "delta_slf_enabled",    type = "bool" },
-    { id = "delta_norecoil_enabled", type = "bool" },
+    {id="delta_player_enabled",t="bool"},{id="delta_player_box",t="bool",c=true},{id="delta_player_box_style",t="int"},
+    {id="delta_player_skeleton",t="bool",c=true},{id="delta_player_health",t="bool"},{id="delta_player_name",t="bool",c=true},
+    {id="delta_player_dist",t="bool",c=true},{id="delta_player_tracers",t="bool",c=true},{id="delta_player_range",t="int"},
+    {id="delta_npc_enabled",t="bool"},{id="delta_npc_box",t="bool",c=true},{id="delta_npc_box_style",t="int"},
+    {id="delta_npc_skeleton",t="bool",c=true},{id="delta_npc_health",t="bool"},{id="delta_npc_name",t="bool",c=true},
+    {id="delta_npc_dist",t="bool",c=true},{id="delta_npc_range",t="int"},
+    {id="delta_npc_aim_enabled",t="bool",k=true},{id="delta_npc_aim_fov",t="int"},{id="delta_npc_aim_smooth",t="int"},
+    {id="delta_npc_aim_bone",t="int"},{id="delta_npc_aim_prediction",t="bool"},{id="delta_npc_aim_draw_fov",t="bool",c=true},
+    {id="delta_extract_enabled",t="bool",c=true},{id="delta_extract_box",t="bool"},{id="delta_extract_range",t="int"},
+    {id="delta_container_enabled",t="bool",c=true},{id="delta_container_box",t="bool"},{id="delta_container_contents",t="bool"},
+    {id="delta_container_range",t="int"},
+    {id="delta_quest_enabled",t="bool",c=true},{id="delta_quest_box",t="bool"},{id="delta_quest_range",t="int"},
+    {id="delta_items_enabled",t="bool",c=true},{id="delta_items_box",t="bool"},{id="delta_items_range",t="int"},
+    {id="delta_corpse_enabled",t="bool",c=true},{id="delta_corpse_box",t="bool"},{id="delta_corpse_contents",t="bool"},
+    {id="delta_corpse_range",t="int"},
+    {id="delta_claymore_enabled",t="bool",c=true},{id="delta_claymore_names",t="bool"},{id="delta_claymore_range",t="int"},
+    {id="delta_inv_enabled",t="bool",k=true},{id="delta_inv_mode",t="int"},
+    {id="delta_inv_show_guns",t="bool"},{id="delta_inv_max_guns",t="int"},
+    {id="delta_inv_show_armor",t="bool"},{id="delta_inv_max_armor",t="int"},
+    {id="delta_inv_show_val",t="bool"},{id="delta_inv_max_val",t="int"},
+    {id="delta_inv_show_other",t="bool"},{id="delta_inv_max_other",t="int"},
+    {id="delta_boss_enabled",t="bool"},{id="delta_wlf_enabled",t="bool"},{id="delta_plf_enabled",t="bool"},
+    {id="delta_mod_alert_enabled",t="bool"},{id="delta_mod_alert_mode",t="int"},
+    {id="delta_watermark_enabled",t="bool"},{id="delta_fullbright",t="bool"},
+    {id="delta_crosshair",t="bool"},{id="delta_crosshair_style",t="int"},{id="delta_crosshair_size",t="int"},
+    {id="delta_crosshair_thickness",t="int"},{id="delta_crosshair_color",t="bool",c=true},
+    {id="delta_crosshair_outline",t="bool"},{id="delta_no_recoil",t="bool"},
+    {id="delta_fire_rate",t="bool"},{id="delta_fire_rate_amount",t="int"},
 }
 
-local function save_config()
-    local ok, result = pcall(function()
+function save_config()
+    local ok, res = pcall(function()
         local path = get_config_path()
-        local dir = path:match("^(.+)\\[^\\]+$")
+        local dir  = path:match("^(.+)\\[^\\]+$")
         if dir then pcall(function() os.execute('mkdir "' .. dir .. '" 2>nul') end) end
         local file = io.open(path, "w")
-        if not file then print("[Project Delta] Failed to open config file: " .. path) return false end
-        for _, item in ipairs(SAVE_ITEMS) do
-            local id = item.id
-            local val = safe_menu_get(id)
-            if item.type == "bool" then
-                file:write(id .. "=" .. (val and "1" or "0") .. "\n")
-            elseif item.type == "int" then
-                file:write(id .. "=" .. tostring(tonumber(val) or 0) .. "\n")
+        if not file then print("[Delta] Failed to save: " .. path) return false end
+        for _, it in ipairs(SAVE_ITEMS) do
+            local v = sg(it.id)
+            if it.t == "bool" then file:write(it.id .. "=" .. (v and "1" or "0") .. "\n")
+            elseif it.t == "int" then file:write(it.id .. "=" .. tostring(tonumber(v) or 0) .. "\n") end
+            if it.c then
+                local c = sgc(it.id)
+                file:write(it.id .. "_color=" .. string.format("%.4f,%.4f,%.4f,%.4f", c[1] or 1, c[2] or 1, c[3] or 1, c[4] or 1) .. "\n")
             end
-            if item.color then
-                local col = safe_menu_get_color(id)
-                if col then
-                    file:write(id .. "_color=" .. string.format("%.4f,%.4f,%.4f,%.4f", col[1] or 1, col[2] or 1, col[3] or 1, col[4] or 1) .. "\n")
-                end
-            end
-            if item.key then
-                file:write(id .. "_key=" .. tostring(safe_menu_get_key(id)) .. "\n")
-            end
+            if it.k then file:write(it.id .. "_key=" .. tostring(sgk(it.id)) .. "\n") end
         end
         file:close()
-        print("[Project Delta] Config saved to: " .. path)
+        print("[Delta] Config saved: " .. path)
         return true
     end)
-    if not ok then print("[Project Delta] Config save error: " .. tostring(result)) return false end
-    return result
+    if not ok then print("[Delta] Save error: " .. tostring(res)) end
 end
 
-local function load_config()
-    local ok, result = pcall(function()
+function load_config()
+    local ok, res = pcall(function()
         local path = get_config_path()
         local file = io.open(path, "r")
-        if not file then print("[Project Delta] No config file found at: " .. path) return false end
+        if not file then print("[Delta] No config found") return false end
         local data = {}
         for line in file:lines() do
-            local key, value = line:match("^([^=]+)=(.*)$")
-            if key and value then data[key] = value end
+            local k, v = line:match("^([^=]+)=(.*)$")
+            if k and v then data[k] = v end
         end
         file:close()
-        for _, item in ipairs(SAVE_ITEMS) do
-            local id = item.id
+        for _, it in ipairs(SAVE_ITEMS) do
+            local id = it.id
             if data[id] then
-                if item.type == "bool" then pcall(function() menu.set(id, data[id] == "1") end)
-                elseif item.type == "int" then pcall(function() menu.set(id, tonumber(data[id]) or 0) end) end
+                if it.t == "bool" then pcall(function() menu.set(id, data[id] == "1") end)
+                elseif it.t == "int" then pcall(function() menu.set(id, tonumber(data[id]) or 0) end) end
             end
-            if item.color and data[id .. "_color"] then
-                local r, g, b, a = data[id .. "_color"]:match("([%d%.%-]+),([%d%.%-]+),([%d%.%-]+),([%d%.%-]+)")
+            if it.c and data[id .. "_color"] then
+                local r,g,b,a = data[id .. "_color"]:match("([%d%.%-]+),([%d%.%-]+),([%d%.%-]+),([%d%.%-]+)")
                 if r then pcall(function() menu.set_color(id, { tonumber(r), tonumber(g), tonumber(b), tonumber(a) }) end) end
             end
-            if item.key and data[id .. "_key"] then
+            if it.k and data[id .. "_key"] then
                 pcall(function() menu.set_key(id, tonumber(data[id .. "_key"]) or 0) end)
             end
         end
-        print("[Project Delta] Config loaded successfully")
+        print("[Delta] Config loaded")
         return true
     end)
-    if not ok then print("[Project Delta] Config load error: " .. tostring(result)) return false end
-    return result
+    if not ok then print("[Delta] Load error: " .. tostring(res)) end
 end
 
-menu.add_button("Project Delta", "Config", "delta_save_config", "Save Config", function() save_config() end)
-menu.add_button("Project Delta", "Config", "delta_load_config", "Load Config", function() load_config() end)
+-- =====================================================================
+-- HELPERS
+-- =====================================================================
+local sqrt, format = math.sqrt, string.format
 
+local function get_dist(x1,y1,z1,x2,y2,z2)
+    local dx,dy,dz = x1-x2, y1-y2, z1-z2
+    return sqrt(dx*dx + dy*dy + dz*dz)
+end
 
--- norecoil
+local function get_root(model)
+    if not model then return nil end
+    return model:find_first_child("Root")
+        or model:find_first_child("MainPart")
+        or model:find_first_child_of_class("BasePart")
+end
 
-local patternNames = { "RecoilPattern", "RecoilPatternOLD", "RecoilPattern2", "RecoilPattern3", "RecoilPatternDisabled" }
+local function is_weapon(n)   local l=n:lower() for _,p in ipairs(weapons_list)   do if l:find(p:lower(),1,true) then return true end end return false end
+local function is_armor(n)    local l=n:lower() for _,p in ipairs(armor_list)     do if l:find(p:lower(),1,true) then return true end end return false end
+local function is_valuable(n) local l=n:lower() for _,p in ipairs(valuables_list) do if l:find(p:lower(),1,true) then return true end end return false end
 
-local function zero_recoil()
-    if not safe_menu_get("delta_norecoil_enabled") then return end
-    local rep = game.ReplicatedStorage
-    if not rep then return end
-    local rw = rep:find_first_child("RangedWeapons")
-    if not rw then return end
-    local weapons = rw:get_children()
-    for i = 1, #weapons do
-        local w = weapons[i]
-        for n = 1, #patternNames do
-            local p = w:find_first_child(patternNames[n])
-            if p then
-                local shots = p:get_children()
-                for j = 1, #shots do
-                    local xv = shots[j]:find_first_child("x")
-                    local yv = shots[j]:find_first_child("y")
-                    if xv then xv.value = 0 end
-                    if yv then yv.value = 0 end
+local function get_item_color(n)
+    if is_valuable(n) then return COL.val end
+    if is_weapon(n)   then return COL.gun end
+    if is_armor(n)    then return COL.armor end
+    return COL.junk
+end
+
+local function get_local_pos()
+    local me = entity.get_local_player()
+    if me and me.position then return me.position end
+    local cp = camera.get_position()
+    return cp
+end
+
+-- =====================================================================
+-- 3D MATH
+-- =====================================================================
+local function get_part_box(part)
+    if not part or not utility.is_valid(part) then return nil end
+    local pos = part.Position
+    local size = part.Size
+    if not pos or not size then return nil end
+    local rx,ry,rz, ux,uy,uz, lx,ly,lz = 1,0,0, 0,1,0, 0,0,1
+    local ok_r, rot = pcall(function() return part.Rotation end)
+    if ok_r and rot and type(rot) == "table" and rot[1] and type(rot[1]) == "table" then
+        rx,ry,rz = rot[1][1] or 1, rot[2][1] or 0, rot[3][1] or 0
+        ux,uy,uz = rot[1][2] or 0, rot[2][2] or 1, rot[3][2] or 0
+        lx,ly,lz = -(rot[1][3] or 0), -(rot[2][3] or 0), -(rot[3][3] or 0)
+    end
+    return {
+        x=pos.x, y=pos.y, z=pos.z,
+        hx=size.x*0.5, hy=size.y*0.5, hz=size.z*0.5,
+        rx=rx,ry=ry,rz=rz, ux=ux,uy=uy,uz=uz, lx=lx,ly=ly,lz=lz,
+    }
+end
+
+local function get_model_bounds(model)
+    local mnx,mny,mnz = math.huge, math.huge, math.huge
+    local mxx,mxy,mxz = -math.huge, -math.huge, -math.huge
+    local any = false
+    for j = 1, #BONE_NAMES do
+        local ok, part = pcall(function() return model:find_first_child(BONE_NAMES[j]) end)
+        if ok and part then
+            local ok2, pos = pcall(function() return part.Position end)
+            local ok3, sz  = pcall(function() return part.Size end)
+            if ok2 and pos and ok3 and sz then
+                any = true
+                local hx,hy,hz = sz.x*0.5, sz.y*0.5, sz.z*0.5
+                mnx=math.min(mnx,pos.x-hx); mny=math.min(mny,pos.y-hy); mnz=math.min(mnz,pos.z-hz)
+                mxx=math.max(mxx,pos.x+hx); mxy=math.max(mxy,pos.y+hy); mxz=math.max(mxz,pos.z+hz)
+            end
+        end
+    end
+    if not any then return nil end
+    return {
+        {mnx,mny,mnz},{mxx,mny,mnz},{mnx,mxy,mnz},{mxx,mxy,mnz},
+        {mnx,mny,mxz},{mxx,mny,mxz},{mnx,mxy,mxz},{mxx,mxy,mxz},
+    }
+end
+
+local function project_corners(corners)
+    local sc, n = {}, 0
+    for i = 1, 8 do
+        local c = corners[i]
+        local sx, sy, vis = draw.world_to_screen(c[1], c[2], c[3])
+        if vis then sc[i] = { x = sx, y = sy } n = n + 1 end
+    end
+    return sc, n
+end
+
+local function draw_3d_box(corners, col, thick)
+    local sc = project_corners(corners)
+    for _, e in ipairs(BOX_EDGES) do
+        local a, b = sc[e[1]], sc[e[2]]
+        if a and b then draw.line(a.x, a.y, b.x, b.y, col, thick or 1) end
+    end
+end
+
+local function draw_3d_corner_box(corners, col, thick)
+    local sc = project_corners(corners)
+    for _, e in ipairs(CORNER_EDGES) do
+        local a, b = sc[e[1]], sc[e[2]]
+        if a and b then draw.line(a.x, a.y, b.x, b.y, col, thick or 1) end
+    end
+end
+
+local function draw_oriented_box(box, col, thick)
+    local corners = {}
+    for i = 1, 8 do
+        local sx, sy, sz = BOX_SIGNS[i][1], BOX_SIGNS[i][2], BOX_SIGNS[i][3]
+        local lx, ly, lz = sx*box.hx, sy*box.hy, sz*box.hz
+        corners[i] = {
+            box.x + box.rx*lx + box.ux*ly + box.lx*lz,
+            box.y + box.ry*lx + box.uy*ly + box.ly*lz,
+            box.z + box.rz*lx + box.uz*ly + box.lz*lz,
+        }
+    end
+    draw_3d_box(corners, col, thick)
+end
+
+local function get_box_anchors(corners)
+    local tx,ty,tn = 0, math.huge, 0
+    local bx,by,bn = 0, -math.huge, 0
+    local lx,lmin,lmax,ln = 0, math.huge, -math.huge, 0
+    for i = 5, 8 do
+        local sx, sy, vis = draw.world_to_screen(corners[i][1], corners[i][2], corners[i][3])
+        if vis then tx = tx + sx; ty = math.min(ty, sy); tn = tn + 1 end
+    end
+    if tn > 0 then tx = tx / tn end
+    for i = 1, 4 do
+        local sx, sy, vis = draw.world_to_screen(corners[i][1], corners[i][2], corners[i][3])
+        if vis then bx = bx + sx; by = math.max(by, sy); bn = bn + 1 end
+    end
+    if bn > 0 then bx = bx / bn end
+    for _, i in ipairs({1,3,5,7}) do
+        local sx, sy, vis = draw.world_to_screen(corners[i][1], corners[i][2], corners[i][3])
+        if vis then lx = lx + sx; lmin = math.min(lmin, sy); lmax = math.max(lmax, sy); ln = ln + 1 end
+    end
+    if ln > 0 then lx = lx / ln end
+    return { top={x=tx,y=ty,vis=tn>0}, bot={x=bx,y=by,vis=bn>0}, left={x=lx,miny=lmin,maxy=lmax,vis=ln>0} }
+end
+
+-- =====================================================================
+-- CACHES & SCANNING
+-- =====================================================================
+local npc_cache = {}
+local world_cache = { extracts={}, items={}, corpses={}, containers={}, quests={}, claymores={} }
+local cached_players = {}
+local boss_data, vehicle_data = {}, {}
+local mod_list = {}     -- { {name=,age=,is_mod=} }
+local slf_results = {}  -- player loot finder
+
+local function get_inv_contents(model)
+    local ok, inv = pcall(function() return model:find_first_child("Inventory") end)
+    if not ok or not inv then return nil end
+    local ok2, ch = pcall(function() return inv:get_children() end)
+    if not ok2 or not ch or #ch == 0 then return nil end
+    local counts = {}
+    for i = 1, #ch do
+        local n = ch[i].name
+        if n and n ~= "" then counts[n] = (counts[n] or 0) + 1 end
+    end
+    local out = {}
+    for n, c in pairs(counts) do out[#out+1] = c > 1 and (n .. " x" .. c) or n end
+    return #out > 0 and out or nil
+end
+
+local function refresh_npcs()
+    npc_cache = {}
+    local ws = game.workspace
+    if not ws then return end
+    local ai_zones = ws:find_first_child("AiZones")
+    if not ai_zones then return end
+    local ok, zones = pcall(function() return ai_zones:get_children() end)
+    if not ok or not zones then return end
+    for i = 1, #zones do
+        local zone = zones[i]
+        if zone.class_name == "Folder" then
+            local ok2, npcs = pcall(function() return zone:get_children() end)
+            if ok2 and npcs then
+                for j = 1, #npcs do
+                    local npc = npcs[j]
+                    if npc.class_name == "Model" and npc.name ~= "" then
+                        local hum  = npc:find_first_child_of_class("Humanoid")
+                        local head = npc:find_first_child("Head")
+                        if hum and head then
+                            local okh, hp = pcall(function() return hum.Health end)
+                            if okh and hp and hp > 0 then
+                                npc_cache[#npc_cache+1] = { model = npc, hum = hum, head = head }
+                            end
+                        end
+                    end
                 end
             end
         end
     end
 end
 
+local function refresh_world()
+    world_cache = { extracts={}, items={}, corpses={}, containers={}, quests={}, claymores={} }
+    local ws = game.workspace
+    if not ws then return end
 
--- inv checker
+    -- Extracts
+    local no_col = ws:find_first_child("NoCollision")
+    local exits  = no_col and no_col:find_first_child("ExitLocations")
+    if exits then
+        local ok, ch = pcall(function() return exits:get_children() end)
+        if ok and ch then
+            for i = 1, #ch do
+                local c = ch[i]
+                local part = c:is_a("BasePart") and c or get_root(c)
+                if part then world_cache.extracts[#world_cache.extracts+1] = { name = c.name, part = part } end
+            end
+        end
+    end
 
+    -- Drops (items + corpses)
+    local drops = ws:find_first_child("DroppedItems")
+    if drops then
+        local ok, ch = pcall(function() return drops:get_children() end)
+        if ok and ch then
+            for i = 1, #ch do
+                local function add_models(models)
+                    for j = 1, #models do
+                        local m = models[j]
+                        if m.class_name == "Model" and m.name ~= "" then
+                            local part = get_root(m)
+                            if part then
+                                local is_body = false
+                                local nl = m.name:lower()
+                                if nl:find("bodybag") or nl:find("corpse") or nl:find("dead") then
+                                    is_body = true
+                                else
+                                    local hum = m:find_first_child_of_class("Humanoid")
+                                    if hum then
+                                        local okh, hp = pcall(function() return hum.Health end)
+                                        if okh and hp and hp <= 0 then is_body = true end
+                                    end
+                                end
+                                if is_body then
+                                    world_cache.corpses[#world_cache.corpses+1] = { name = m.name, part = part, contents = get_inv_contents(m) }
+                                else
+                                    world_cache.items[#world_cache.items+1] = { name = m.name, part = part }
+                                end
+                            end
+                        end
+                    end
+                end
+                if ch[i].class_name == "Folder" then
+                    local ok2, sub = pcall(function() return ch[i]:get_children() end)
+                    if ok2 and sub then add_models(sub) end
+                else
+                    add_models({ ch[i] })
+                end
+            end
+        end
+    end
 
-local inv_panel = { x = 1660, y = 260, w = 260, dragging = false, drag_ox = 0, drag_oy = 0 }
-local TITLE_H  = 24
-local PAD      = 10
-local LINE_H   = 16
-local LINE_H_L = 20
-local FONT     = 13
-local FONT_L   = 14
-local SEC_H    = 18
+    -- Containers
+    local cont = ws:find_first_child("Containers")
+    if cont then
+        local ok, ch = pcall(function() return cont:get_children() end)
+        if ok and ch then
+            for i = 1, #ch do
+                local function add_models(models)
+                    for j = 1, #models do
+                        local m = models[j]
+                        if m.class_name == "Model" and m.name ~= "" then
+                            local part = get_root(m)
+                            if part then
+                                world_cache.containers[#world_cache.containers+1] = { name = m.name, part = part, contents = get_inv_contents(m) }
+                            end
+                        end
+                    end
+                end
+                if ch[i].class_name == "Folder" then
+                    local ok2, sub = pcall(function() return ch[i]:get_children() end)
+                    if ok2 and sub then add_models(sub) end
+                else
+                    add_models({ ch[i] })
+                end
+            end
+        end
+    end
 
-local col_bg      = { 0.05, 0.05, 0.07, 0.96 }
-local col_title   = { 0.07, 0.07, 0.10, 1.00 }
-local col_border  = { 0.18, 0.72, 0.84, 1.00 }
-local col_accent  = { 0.18, 0.72, 0.84, 1.00 }
-local col_dim     = { 0.25, 0.25, 0.30, 1.00 }
-local col_sec_bg  = { 0.08, 0.08, 0.11, 1.00 }
-local col_sec_line= { 0.18, 0.72, 0.84, 0.4  }
-local col_weapon  = { 0.95, 0.30, 0.30, 1.0  }
-local col_armor   = { 0.18, 0.72, 0.84, 1.0  }
-local col_val     = { 0.35, 0.90, 0.45, 1.0  }
-local col_junk    = { 0.45, 0.45, 0.50, 1.0  }
-local col_sec_gun = { 0.95, 0.30, 0.30, 1.0  }
-local col_sec_arm = { 0.18, 0.72, 0.84, 1.0  }
-local col_sec_val = { 0.35, 0.90, 0.45, 1.0  }
-local col_sec_rst = { 0.40, 0.40, 0.45, 1.0  }
+    -- Quests
+    local qf = ws:find_first_child("QuestItems")
+    if qf then
+        local ok, ch = pcall(function() return qf:get_children() end)
+        if ok and ch then
+            for i = 1, #ch do
+                local function add_models(models)
+                    for j = 1, #models do
+                        local m = models[j]
+                        if m.class_name == "Model" and m.name ~= "" then
+                            local part = get_root(m)
+                            if part then world_cache.quests[#world_cache.quests+1] = { name = m.name, part = part } end
+                        end
+                    end
+                end
+                if ch[i].class_name == "Folder" then
+                    local ok2, sub = pcall(function() return ch[i]:get_children() end)
+                    if ok2 and sub then add_models(sub) end
+                else
+                    add_models({ ch[i] })
+                end
+            end
+        end
+    end
 
-local weapons        = { "AsVal", "FAL", "AKMN", "RPG7", "M4", "PKM", "R700", "SVD", "TFZ98S", "Saiga" }
-local armor_list     = { "Altyn", "FastVisor", "HSPV", "JPC", "QuadNVG", "ScavKingHelment", "ScavKingVest", "IOTV4", "TitanShield", "DozerArmor", "FastMT", "Kulon", "ZSH" }
-local valuables_list = { "FlareGun", "SPSh44", "GPU", "Gold50g", "GoldWatch", "GoldTicket", "Mag556Rnd100", "Reapir", "SOCOM556", "RepairKit" }
-
-local function is_weapon(name)
-    local n = name:lower()
-    for _, p in ipairs(weapons) do if n:find(p:lower(), 1, true) then return true end end
-    return false
+    -- Claymores (precise: AiZones.Claymores -> MON50)
+    local ai_zones = ws:find_first_child("AiZones")
+    local clay_folder = ai_zones and ai_zones:find_first_child("Claymores")
+    if clay_folder then
+        local ok, ch = pcall(function() return clay_folder:get_children() end)
+        if ok and ch then
+            for i = 1, #ch do
+                local m = ch[i]
+                if m.name == "MON50" then
+                    local mine = m:find_first_child("MeshPart") or get_root(m)
+                    local trig = m:find_first_child("Trigger")
+                    if mine then world_cache.claymores[#world_cache.claymores+1] = { name = "Claymore", part = mine, trigger = trig } end
+                end
+            end
+        end
+    end
 end
 
-local function is_armor(name)
-    local n = name:lower()
-    for _, p in ipairs(armor_list) do if n:find(p:lower(), 1, true) then return true end end
-    return false
-end
-
-local function is_valuable(name)
-    local n = name:lower()
-    for _, p in ipairs(valuables_list) do if n:find(p:lower(), 1, true) then return true end end
-    return false
-end
-
-local function get_item_color(name)
-    if is_valuable(name) then return col_val end
-    if is_weapon(name)   then return col_weapon end
-    if is_armor(name)    then return col_armor end
-    return col_junk
-end
-
-local cached_players = {}
-
+-- Thorough player inventory scan (from the working v2 script)
 local function scan_players_inv()
     local result = {}
     local players = entity.get_players()
-    if not players then return end
-    local rep = game.ReplicatedStorage
+    if not players then cached_players = result return end
+    local rep = game.get_service("ReplicatedStorage")
     local rep_players = rep and rep:find_first_child("Players")
+    local ws = game.workspace
     for i = 1, #players do
         local p = players[i]
         if p and p.is_valid and not p.is_local then
             local pname = p.name or ""
             local puid  = tostring(p.user_id or "")
-            local inv = {}
-            local worn = {}
-            local seen = {}
+            local inv, worn, seen = {}, {}, {}
             local equipped = nil
             local function add(name, is_top)
-                if name ~= "" and not seen[name] then
+                if name and name ~= "" and not seen[name] then
                     seen[name] = true
                     inv[#inv+1] = name
                     if is_top then worn[name] = true end
@@ -321,65 +641,62 @@ local function scan_players_inv()
                 if not ok2 or not items then return end
                 for j = 1, #items do
                     local item = items[j]
-                    local name = item.name or ""
-                    if name ~= "" then add(name, depth == 0) end
-                    local ok3, children = pcall(function() return item:get_children() end)
-                    if ok3 and children and #children > 0 then scan_folder(item, (depth or 0) + 1) end
+                    local n = item.name or ""
+                    if n ~= "" then add(n, depth == 0) end
+                    local ok3, ch = pcall(function() return item:get_children() end)
+                    if ok3 and ch and #ch > 0 then scan_folder(item, (depth or 0) + 1) end
                 end
             end
             if rep_players then
                 local data = rep_players:find_first_child(pname)
-                if not data and puid ~= "" then
-                    data = rep_players:find_first_child(puid)
-                end
+                if not data and puid ~= "" then data = rep_players:find_first_child(puid) end
                 if not data then
                     local ok2, folders = pcall(function() return rep_players:get_children() end)
                     if ok2 and folders then
-                        for _, folder in ipairs(folders) do
-                            if folder.name == pname or folder.name == puid then
-                                data = folder
-                                break
-                            end
+                        for _, f in ipairs(folders) do
+                            if f.name == pname or f.name == puid then data = f break end
                         end
                     end
                 end
-            if data then
+                if data then
                     scan_folder(data:find_first_child("Inventory"), 0)
                     local status = data:find_first_child("Status")
                     if status then
                         local gv = status:find_first_child("GameplayVariables")
                         if gv then
                             local eq = gv:find_first_child("EquippedTool")
-                            if eq and eq.value then
-                                local val = eq.value
-                                if type(val) == "string" and val ~= "" then equipped = val
-                                elseif type(val) == "userdata" then equipped = val.name end
+                            if eq and eq.Value then
+                                local v = eq.Value
+                                if type(v) == "string" and v ~= "" then equipped = v
+                                elseif type(v) == "userdata" then equipped = v.name end
                             end
                         end
                     end
                 end
             end
-            local ws = game.workspace
+            -- also pull holstered tools + worn clothing from the workspace character
             local wchar = ws and ws:find_first_child(pname)
             if wchar and wchar:is_a("Model") then
                 local holstered = wchar:find_first_child("Holstered")
                 if holstered then
-                    local items = holstered:get_children()
-                    for cj = 1, #items do
-                        local item = items[cj]
-                        local val = item.value
-                        local iname = val and (val.name or tostring(val)) or ""
-                        if iname ~= "" then add(iname, false) end
+                    local ok2, items = pcall(function() return holstered:get_children() end)
+                    if ok2 and items then
+                        for cj = 1, #items do
+                            local v = items[cj].Value
+                            local iname = v and (v.name or tostring(v)) or ""
+                            if iname ~= "" then add(iname, false) end
+                        end
                     end
                 end
                 local clothing = wchar:find_first_child("Clothing")
                 if clothing then
-                    local items = clothing:get_children()
-                    for cj = 1, #items do
-                        local item = items[cj]
-                        local val = item.value
-                        local iname = val and (val.name or tostring(val)) or ""
-                        if iname ~= "" then add(iname, true) end
+                    local ok2, items = pcall(function() return clothing:get_children() end)
+                    if ok2 and items then
+                        for cj = 1, #items do
+                            local v = items[cj].Value
+                            local iname = v and (v.name or tostring(v)) or ""
+                            if iname ~= "" then add(iname, true) end
+                        end
                     end
                 end
             end
@@ -389,197 +706,12 @@ local function scan_players_inv()
     cached_players = result
 end
 
-local function get_closest_to_crosshair()
-    if #cached_players == 0 then return nil end
-    local sw, sh = utility.get_screen_size()
-    local scx, scy = sw * 0.5, sh * 0.5
-    local best, best_dist = nil, math.huge
-    for _, d in ipairs(cached_players) do
-        local p = d.entity
-        if p and p.is_valid and p.is_alive then
-            local pos = p.position
-            if pos then
-                local sx, sy, vis = utility.world_to_screen(pos.x, pos.y, pos.z)
-                if vis then
-                    local dx, dy = sx - scx, sy - scy
-                    local dist = math.sqrt(dx*dx + dy*dy)
-                    if dist < best_dist then best_dist = dist best = d end
-                end
-            end
-        end
-    end
-    return best
-end
-
-local inv_toggled = false
-local inv_last_key = false
-
-local function should_show_inv()
-    if not safe_menu_get("delta_inv_enabled") then return false end
-    local mode = safe_menu_get("delta_inv_mode") or 0
-    local key = safe_menu_get_key("delta_inv_enabled")
-    if key == 0 then key = 2 end
-    if mode == 0 then return true
-    elseif mode == 1 then
-        local down = input.is_key_down(key)
-        if down and not inv_last_key then inv_toggled = not inv_toggled end
-        inv_last_key = down
-        return inv_toggled
-    else
-        inv_last_key = false
-        return input.is_key_down(key)
-    end
-end
-
-local function draw_section_header(px, ly, pw, label, col_left)
-    draw.rect_filled(px, ly, pw, SEC_H, col_sec_bg, 0)
-    draw.rect_filled(px, ly, 2, SEC_H, col_left, 0)
-    draw.line(px, ly + SEC_H, px + pw, ly + SEC_H, col_sec_line, 1)
-    local tw = draw.get_text_size(label, 10)
-    draw.text(px + (pw - tw) * 0.5, ly + 4, label, col_left, 10)
-    return ly + SEC_H
-end
-
-local function clamp_list(list, max)
-    if #list <= max then return list end
-    local out = {}
-    for i = 1, max do out[i] = list[i] end
-    return out
-end
-
-local function draw_inv_panel()
-    if not should_show_inv() then inv_panel.dragging = false return end
-    local show_guns  = safe_menu_get("delta_inv_show_guns")
-    local show_armor = safe_menu_get("delta_inv_show_armor")
-    local show_val   = safe_menu_get("delta_inv_show_val")
-    local show_other = safe_menu_get("delta_inv_show_other")
-    local max_guns   = safe_menu_get("delta_inv_max_guns")  or 10
-    local max_armor  = safe_menu_get("delta_inv_max_armor") or 10
-    local max_val    = safe_menu_get("delta_inv_max_val")   or 10
-    local max_other  = safe_menu_get("delta_inv_max_other") or 5
-    local target = get_closest_to_crosshair()
-    local equipped_item = nil
-    local weapon_items, armor_items, valuable_items, other_items = {}, {}, {}, {}
-    if target then
-        equipped_item = target.equipped
-        for _, item in ipairs(target.inventory) do
-            if is_valuable(item) then valuable_items[#valuable_items+1] = item
-            elseif is_weapon(item) then weapon_items[#weapon_items+1] = item
-            elseif is_armor(item) and target.worn[item] then armor_items[#armor_items+1] = item
-            elseif not is_armor(item) then other_items[#other_items+1] = item end
-        end
-    end
-    weapon_items   = clamp_list(weapon_items,   max_guns)
-    armor_items    = clamp_list(armor_items,    max_armor)
-    valuable_items = clamp_list(valuable_items, max_val)
-    other_items    = clamp_list(other_items,    max_other)
-    local panel_h = TITLE_H + PAD
-    if equipped_item and equipped_item ~= "" then panel_h = panel_h + LINE_H_L + PAD + 14 end
-    if show_guns  and #weapon_items   > 0 then panel_h = panel_h + SEC_H + (#weapon_items   * LINE_H_L) + 4 end
-    if show_armor and #armor_items    > 0 then panel_h = panel_h + SEC_H + (#armor_items    * LINE_H_L) + 4 end
-    if show_val   and #valuable_items > 0 then panel_h = panel_h + SEC_H + (#valuable_items * LINE_H_L) + 4 end
-    if show_other and #other_items    > 0 then panel_h = panel_h + SEC_H + (#other_items    * LINE_H)   + 4 end
-    if not target then panel_h = panel_h + LINE_H end
-    panel_h = panel_h + PAD
-    local pw = inv_panel.w
-    local mx, my = utility.get_mouse_pos()
-    local lmb = input.is_key_down(0x01)
-    if lmb then
-        if not inv_panel.dragging then
-            if mx >= inv_panel.x and mx <= inv_panel.x + pw and my >= inv_panel.y and my <= inv_panel.y + TITLE_H then
-                inv_panel.dragging = true inv_panel.drag_ox = mx - inv_panel.x inv_panel.drag_oy = my - inv_panel.y
-            end
-        else inv_panel.x = mx - inv_panel.drag_ox inv_panel.y = my - inv_panel.drag_oy end
-    else inv_panel.dragging = false end
-    local px, py = inv_panel.x, inv_panel.y
-    draw.rect(px-1, py-1, pw+2, panel_h+2, {0.18,0.72,0.84,0.15}, 5, 1)
-    draw.rect_filled(px, py, pw, panel_h, col_bg, 4)
-    draw.rect_filled(px, py, pw, TITLE_H, col_title, 4)
-    draw.rect_filled(px, py, 2, TITLE_H, col_border, 0)
-    draw.line(px, py+TITLE_H, px+pw, py+TITLE_H, col_border, 1)
-    draw.rect(px, py, pw, panel_h, {0.18,0.72,0.84,0.5}, 4, 1)
-    local title = target and target.name or "Inventory Checker"
-    draw.text(px+10, py+5, title, col_accent, FONT)
-    local hint = "drag ::"
-    local hw = draw.get_text_size(hint, 10)
-    draw.text(px+pw-hw-PAD, py+6, hint, col_dim, 10)
-    local ly = py + TITLE_H + PAD
-    if not target then draw.text(px+PAD, ly, "No players visible", col_junk, FONT) return end
-    if equipped_item and equipped_item ~= "" then
-        local col = get_item_color(equipped_item)
-        draw.text(px+PAD, ly, "EQUIPPED", col_dim, 9)
-        draw.text(px+PAD, ly+11, equipped_item, col, FONT_L)
-        ly = ly + LINE_H_L + PAD
-        draw.line(px+PAD, ly, px+pw-PAD, ly, col_sec_line, 1)
-        ly = ly + 4
-    end
-    if show_guns and #weapon_items > 0 then
-        ly = draw_section_header(px, ly, pw, "GUN(S)", col_sec_gun)
-        for _, item in ipairs(weapon_items) do draw.text(px+PAD+6, ly+2, item, col_weapon, FONT_L) ly = ly+LINE_H_L end
-        ly = ly + 4
-    end
-    if show_armor and #armor_items > 0 then
-        ly = draw_section_header(px, ly, pw, "ARMOR", col_sec_arm)
-        for _, item in ipairs(armor_items) do draw.text(px+PAD+6, ly+2, item, col_armor, FONT_L) ly = ly+LINE_H_L end
-        ly = ly + 4
-    end
-    if show_val and #valuable_items > 0 then
-        ly = draw_section_header(px, ly, pw, "VALUABLES", col_sec_val)
-        for _, item in ipairs(valuable_items) do draw.text(px+PAD+6, ly+2, item, col_val, FONT_L) ly = ly+LINE_H_L end
-        ly = ly + 4
-    end
-    if show_other and #other_items > 0 then
-        ly = draw_section_header(px, ly, pw, "OTHER", col_sec_rst)
-        for _, item in ipairs(other_items) do draw.text(px+PAD+6, ly+2, item, col_junk, FONT) ly = ly+LINE_H end
-    end
-end
-
-
-
--- boss tracker
-
-
-local boss_panel = { x = 5, y = 370, w = 170, dragging = false, drag_ox = 0, drag_oy = 0 }
-local BOSS_TITLE_H = 24
-local BOSS_PAD     = 8
-local BOSS_ROW_H   = 18
-local BOSS_SEC_H   = 16
-local BOSS_FONT    = 12
-
-local bcol_bg      = { 0.05, 0.05, 0.07, 0.96 }
-local bcol_title   = { 0.07, 0.07, 0.10, 1.00 }
-local bcol_border  = { 0.18, 0.72, 0.84, 1.00 }
-local bcol_accent  = { 0.18, 0.72, 0.84, 1.00 }
-local bcol_dim     = { 0.25, 0.25, 0.30, 1.00 }
-local bcol_sec_bg  = { 0.08, 0.08, 0.11, 1.00 }
-local bcol_sec_line= { 0.18, 0.72, 0.84, 0.4  }
-local bcol_alive   = { 0.47, 1.00, 0.63, 1.00 }
-local bcol_warn    = { 1.00, 0.78, 0.24, 1.00 }
-local bcol_dead    = { 1.00, 0.31, 0.31, 1.00 }
-local bcol_none    = { 0.47, 0.47, 0.50, 1.00 }
-local bcol_vehicle = { 1.00, 0.85, 0.20, 1.00 }
-local bcol_white   = { 1.00, 1.00, 1.00, 1.00 }
-
-local boss_defs = {
-    { zone = "Sawmill",    name = "Anton"    },
-    { zone = "Factory",    name = "Dozer"    },
-    { zone = "Whisper",    name = "Whisper"  },
-    { zone = "Death",      name = "Death"    },
-    { zone = "ScavCastle", name = "ScavKing" },
-}
-
-local vehicle_defs = {
-    { name = "MI24V", label = "Mi-24V Hind" },
-    { name = "BTR80", label = "BTR-80"       },
-}
-
-local boss_data    = {}
-local vehicle_data = {}
-
 local function update_bosses()
     local ws = game.workspace
     if not ws then return end
     local ai_zones = ws:find_first_child("AiZones")
+    local me = entity.get_local_player()
+    local mp = me and me.position
     for i, def in ipairs(boss_defs) do
         local entry = { name = def.name, status = "none", hp = 0, max_hp = 0, dist = -1 }
         if ai_zones then
@@ -588,23 +720,16 @@ local function update_bosses()
             if boss then
                 local hum = boss:find_first_child_of_class("Humanoid")
                 if hum then
-                    local hp = hum.health or 0
-                    local max_hp = hum.max_health or 100
-                    if hp > 0 then
+                    local okh, hp = pcall(function() return hum.Health end)
+                    local okm, mhp = pcall(function() return hum.MaxHealth end)
+                    if okh and hp and hp > 0 then
                         entry.status = "alive"
                         entry.hp = math.floor(hp)
-                        entry.max_hp = math.floor(max_hp)
-                        local me = entity.get_local_player()
+                        entry.max_hp = math.floor(okm and mhp or 100)
                         local hrp = boss:find_first_child("HumanoidRootPart")
-                        if me and hrp then
-                            local mpos = me.position
-                            local bpos = hrp.position
-                            if mpos and bpos then
-                                local dx = mpos.x - bpos.x
-                                local dy = mpos.y - bpos.y
-                                local dz = mpos.z - bpos.z
-                                entry.dist = math.floor(math.sqrt(dx*dx + dy*dy + dz*dz))
-                            end
+                        if mp and hrp then
+                            local okp, bp = pcall(function() return hrp.Position end)
+                            if okp and bp then entry.dist = math.floor(get_dist(mp.x,mp.y,mp.z,bp.x,bp.y,bp.z) * METERS_PER_STUD) end
                         end
                     else entry.status = "dead" end
                 else entry.status = "dead" end
@@ -619,8 +744,8 @@ local function update_bosses()
             local ok2, zones = pcall(function() return ai_zones:get_children() end)
             if ok2 and zones then
                 for _, z in ipairs(zones) do
-                    local found = z:find_first_child(def.name)
-                    if found then veh = found break end
+                    local f = z:find_first_child(def.name)
+                    if f then veh = f break end
                 end
             end
         end
@@ -628,1059 +753,924 @@ local function update_bosses()
             entry.status = "spawned"
             local root = veh:find_first_child("HumanoidRootPart")
             if not root then
-                local ok2, children = pcall(function() return veh:get_children() end)
-                if ok2 and children then
-                    for _, c in ipairs(children) do
-                        if c:is_a("BasePart") then root = c break end
-                    end
+                local ok2, ch = pcall(function() return veh:get_children() end)
+                if ok2 and ch then
+                    for _, c in ipairs(ch) do if c:is_a("BasePart") then root = c break end end
                 end
             end
-            local me = entity.get_local_player()
-            if me and root then
-                local mpos = me.position
-                local vpos = root.position
-                if mpos and vpos then
-                    local dx = mpos.x - vpos.x
-                    local dy = mpos.y - vpos.y
-                    local dz = mpos.z - vpos.z
-                    entry.dist = math.floor(math.sqrt(dx*dx + dy*dy + dz*dz))
-                end
+            if mp and root then
+                local okp, vp = pcall(function() return root.Position end)
+                if okp and vp then entry.dist = math.floor(get_dist(mp.x,mp.y,mp.z,vp.x,vp.y,vp.z) * METERS_PER_STUD) end
             end
         end
         vehicle_data[i] = entry
     end
 end
 
-local function draw_boss_section_header(px, ly, pw, label)
-    draw.rect_filled(px, ly, pw, BOSS_SEC_H, bcol_sec_bg, 0)
-    draw.rect_filled(px, ly, 2, BOSS_SEC_H, bcol_accent, 0)
-    draw.line(px, ly + BOSS_SEC_H, px + pw, ly + BOSS_SEC_H, bcol_sec_line, 1)
-    local tw = draw.get_text_size(label, 9)
-    draw.text(px + (pw - tw) * 0.5, ly + 3, label, bcol_accent, 9)
-    return ly + BOSS_SEC_H
-end
-
-local function hp_color(hp, max_hp)
-    if max_hp <= 0 then return bcol_none end
-    local pct = hp / max_hp
-    if pct > 0.5 then return bcol_alive end
-    if pct > 0.2 then return bcol_warn  end
-    return bcol_dead
-end
-
-local function draw_boss_panel()
-    if not safe_menu_get("delta_boss_enabled") then boss_panel.dragging = false return end
-    local num_boss_rows    = #boss_defs
-    local num_vehicle_rows = #vehicle_defs
-    local panel_h = BOSS_TITLE_H
-                  + BOSS_SEC_H + (num_boss_rows    * BOSS_ROW_H) + 4
-                  + BOSS_SEC_H + (num_vehicle_rows * BOSS_ROW_H) + 4
-                  + BOSS_PAD
-    local pw = boss_panel.w
-    local mx, my = utility.get_mouse_pos()
-    local lmb = input.is_key_down(0x01)
-    if lmb then
-        if not boss_panel.dragging then
-            if mx >= boss_panel.x and mx <= boss_panel.x + pw and my >= boss_panel.y and my <= boss_panel.y + BOSS_TITLE_H then
-                boss_panel.dragging = true boss_panel.drag_ox = mx - boss_panel.x boss_panel.drag_oy = my - boss_panel.y
-            end
-        else boss_panel.x = mx - boss_panel.drag_ox boss_panel.y = my - boss_panel.drag_oy end
-    else boss_panel.dragging = false end
-    local px, py = boss_panel.x, boss_panel.y
-    draw.rect(px-1, py-1, pw+2, panel_h+2, {0.18,0.72,0.84,0.15}, 5, 1)
-    draw.rect_filled(px, py, pw, panel_h, bcol_bg, 4)
-    draw.rect_filled(px, py, pw, BOSS_TITLE_H, bcol_title, 4)
-    draw.rect_filled(px, py, 2, BOSS_TITLE_H, bcol_border, 0)
-    draw.line(px, py+BOSS_TITLE_H, px+pw, py+BOSS_TITLE_H, bcol_border, 1)
-    draw.rect(px, py, pw, panel_h, {0.18,0.72,0.84,0.5}, 4, 1)
-    draw.text(px+10, py+5, "Boss Tracker", bcol_accent, BOSS_FONT)
-    local hint = "drag ::"
-    local hw = draw.get_text_size(hint, 10)
-    draw.text(px+pw-hw-BOSS_PAD, py+6, hint, bcol_dim, 10)
-    local ly = py + BOSS_TITLE_H
-    ly = draw_boss_section_header(px, ly, pw, "BOSSES")
-    for i, entry in ipairs(boss_data) do
-        local row_y = ly + (i-1) * BOSS_ROW_H
-        draw.text(px+BOSS_PAD+4, row_y+3, entry.name, bcol_white, BOSS_FONT)
-        local status_txt, status_col
-        if entry.status == "alive" then
-            local pct = entry.max_hp > 0 and math.floor(entry.hp / entry.max_hp * 100) or 0
-            status_txt = string.format("%d/%d (%d%%)", entry.hp, entry.max_hp, pct)
-            if entry.dist >= 0 then status_txt = status_txt .. "  " .. entry.dist .. "m" end
-            status_col = hp_color(entry.hp, entry.max_hp)
-        elseif entry.status == "dead" then
-            status_txt = "Dead" status_col = bcol_dead
-        else
-            status_txt = "Not Spawned" status_col = bcol_none
-        end
-        local sw = draw.get_text_size(entry.name, BOSS_FONT)
-        draw.text(px+BOSS_PAD+4+sw+6, row_y+3, status_txt, status_col, BOSS_FONT)
-    end
-    ly = ly + (num_boss_rows * BOSS_ROW_H) + 4
-    ly = draw_boss_section_header(px, ly, pw, "VEHICLES")
-    for i, entry in ipairs(vehicle_data) do
-        local row_y = ly + (i-1) * BOSS_ROW_H
-        draw.text(px+BOSS_PAD+4, row_y+3, entry.name, bcol_white, BOSS_FONT)
-        local vstatus_txt, vstatus_col
-        if entry.status == "spawned" then
-            vstatus_txt = "Spawned"
-            if entry.dist >= 0 then vstatus_txt = vstatus_txt .. "  " .. entry.dist .. "m" end
-            vstatus_col = bcol_vehicle
-        else
-            vstatus_txt = "Not Spawned" vstatus_col = bcol_none
-        end
-        local sw = draw.get_text_size(entry.name, BOSS_FONT)
-        draw.text(px+BOSS_PAD+4+sw+6, row_y+3, vstatus_txt, vstatus_col, BOSS_FONT)
-    end
-end
-
-
--- esp
-
-
-local world = { extracts={}, items={}, corpses={}, containers={}, quests={}, npcs={}, cam_x=0, cam_y=0, cam_z=0 }
-local folders = { workspace=nil, exfils=nil, drops=nil, containers=nil, quests=nil, ai_zones=nil, last_update=0 }
-local cfg = {}
-local colors = { gray = { 0.7, 0.7, 0.7, 1 } }
-
-local skeleton_pairs = {
-    {"Head","UpperTorso"},{"UpperTorso","LowerTorso"},
-    {"UpperTorso","LeftUpperArm"},{"UpperTorso","RightUpperArm"},
-    {"LeftUpperArm","LeftLowerArm"},{"RightUpperArm","RightLowerArm"},
-    {"LeftLowerArm","LeftHand"},{"RightLowerArm","RightHand"},
-    {"LowerTorso","LeftUpperLeg"},{"LowerTorso","RightUpperLeg"},
-    {"LeftUpperLeg","LeftLowerLeg"},{"RightUpperLeg","RightLowerLeg"},
-    {"LeftLowerLeg","LeftFoot"},{"RightLowerLeg","RightFoot"}
-}
-
-local aim_bones = { [0]="Head", [1]="UpperTorso", [2]="LowerTorso" }
-
-local function is_valid(inst)
-    if not inst then return false end
-    local ok, parent = pcall(function() return inst.parent end)
-    return ok and parent ~= nil
-end
-
-local function get_root(model)
-    if not model then return nil end
-    return model:find_first_child("Root")
-        or model:find_first_child("MainPart")
-        or model:find_first_child_of_class("BasePart")
-end
-
-local function get_dist(x1,y1,z1,x2,y2,z2)
-    local dx,dy,dz = x1-x2, y1-y2, z1-z2
-    return sqr(dx*dx+dy*dy+dz*dz)
-end
-
-local function refresh_folders()
-    local now = utility.get_tick_count()
-    if folders.workspace and (now - folders.last_update) < 500 then return true end
-    folders.last_update = now
-    local ws = game.workspace
-    if not ws then return false end
-    if folders.workspace ~= ws or not is_valid(folders.workspace) then
-        folders.workspace = ws
-        folders.exfils=nil folders.drops=nil folders.containers=nil folders.quests=nil folders.ai_zones=nil
-    end
-    if not folders.exfils or not is_valid(folders.exfils) then
-        local no_collision = ws:find_first_child("NoCollision")
-        folders.exfils = no_collision and no_collision:find_first_child("ExitLocations")
-    end
-    if not folders.drops or not is_valid(folders.drops) then
-        folders.drops = ws:find_first_child("DroppedItems")
-    end
-    if not folders.containers or not is_valid(folders.containers) then
-        folders.containers = ws:find_first_child("Containers")
-    end
-    if not folders.quests or not is_valid(folders.quests) then
-        folders.quests = ws:find_first_child("QuestItems")
-    end
-    if not folders.ai_zones or not is_valid(folders.ai_zones) then
-        folders.ai_zones = ws:find_first_child("AiZones")
-    end
-    return true
-end
-
-local function scan_extracts()
-    if not folders.exfils then if #world.extracts > 0 then world.extracts = {} end return end
-    local result = {}
-    local ok, children = pcall(function() return folders.exfils:get_children() end)
-    if not ok or not children then return end
-    for i = 1, #children do
-        local model = children[i]
-        local part = model:find_first_child_of_class("BasePart")
-        if not part then
-            local ok2, sub = pcall(function() return model:get_children() end)
-            if ok2 and sub then
-                for _, c in ipairs(sub) do
-                    if c:is_a("BasePart") then part = c break end
-                end
-            end
-        end
-        if part then result[#result+1] = { name = model.name, part = part } end
-    end
-    world.extracts = result
-end
-
-local function get_inventory_contents(model)
-    local ok, inv = pcall(function() return model:find_first_child("Inventory") end)
-    if not ok or not inv then return nil end
-    local ok2, children = pcall(function() return inv:get_children() end)
-    if not ok2 or not children or #children == 0 then return nil end
-    local counts = {}
-    for i = 1, #children do
-        local item = children[i]
-        if item.name ~= "" then
-            counts[item.name] = (counts[item.name] or 0) + 1
-        end
-    end
-    local out = {}
-    for name, count in pairs(counts) do
-        out[#out+1] = count > 1 and (name .. " x" .. count) or name
-    end
-    return #out > 0 and out or nil
-end
-
-local function scan_items()
-    if not folders.drops then
-        if #world.items > 0 or #world.corpses > 0 then world.items = {} world.corpses = {} end
-        return
-    end
-    local items_result = {}
-    local corpses_result = {}
-    local function process_model(model)
-        if model.class_name ~= "Model" or model.name == "" then return end
-        local part = get_root(model)
-        if not part then return end
-        local ok, hum = pcall(function() return model:find_first_child_of_class("Humanoid") end)
-        if ok and hum then
-            local ok2, hp = pcall(function() return hum.health end)
-            if ok2 and hp and hp <= 0 then
-                local contents = get_inventory_contents(model)
-                corpses_result[#corpses_result+1] = { name = model.name, part = part, contents = contents }
-                return
-            end
-        end
-        items_result[#items_result+1] = { name = model.name, part = part }
-    end
-    local ok, children = pcall(function() return folders.drops:get_children() end)
-    if not ok or not children then return end
-    for i = 1, #children do
-        local child = children[i]
-        if child.class_name == "Folder" then
-            local ok2, items = pcall(function() return child:get_children() end)
-            if ok2 and items then
-                for j = 1, #items do
-                    process_model(items[j])
-                end
-            end
-        elseif child.class_name == "Model" then
-            process_model(child)
-        end
-    end
-    world.items = items_result
-    world.corpses = corpses_result
-end
-
-local function scan_containers()
-    if not folders.containers then return end
-    local result = {}
-    local function process(model)
-        if model.class_name~="Model" or model.name=="" then return end
-        local part = get_root(model)
-        if not part then return end
-        local inv = model:find_first_child("Inventory")
-        if not inv then return end
-        local ok2, children = pcall(function() return inv:get_children() end)
-        if not ok2 or not children or #children==0 then return end
-        local counts = {}
-        for i=1,#children do
-            local item=children[i]
-            if item.name~="" then counts[item.name]=(counts[item.name] or 0)+1 end
-        end
-        local contents={}
-        for name,count in pairs(counts) do contents[#contents+1]=count>1 and (name.." x"..count) or name end
-        result[#result+1]={name=model.name,part=part,contents=contents}
-    end
-    local ok, children = pcall(function() return folders.containers:get_children() end)
-    if not ok or not children then return end
-    for i=1,#children do
-        local child=children[i]
-        if child.class_name=="Folder" then
-            local ok2, models = pcall(function() return child:get_children() end)
-            if ok2 and models then for j=1,#models do process(models[j]) end end
-        else process(child) end
-    end
-    world.containers = result
-end
-
-local function scan_quests()
-    if not folders.quests then return end
-    local result = {}
-    local function process(model)
-        if model.class_name~="Model" or model.name=="" then return end
-        local part = get_root(model)
-        if part then result[#result+1]={name=model.name,part=part} end
-    end
-    local ok, children = pcall(function() return folders.quests:get_children() end)
-    if not ok or not children then return end
-    for i=1,#children do
-        local child=children[i]
-        if child.class_name=="Folder" then
-            local ok2, models = pcall(function() return child:get_children() end)
-            if ok2 and models then for j=1,#models do process(models[j]) end end
-        else process(child) end
-    end
-    world.quests = result
-end
-
-local function scan_npcs()
-    if not folders.ai_zones then return end
-    local result = {}
-    local ok, zones = pcall(function() return folders.ai_zones:get_children() end)
-    if not ok or not zones then return end
-    for i=1,#zones do
-        local zone=zones[i]
-        if zone.class_name=="Folder" then
-            local ok2, npcs = pcall(function() return zone:get_children() end)
-            if ok2 and npcs then
-                for j=1,#npcs do
-                    local npc=npcs[j]
-                    if npc.class_name=="Model" and npc.name~="" then
-                        local hum=npc:find_first_child_of_class("Humanoid")
-                        local head=npc:find_first_child("Head")
-                        if hum and head then
-                            local hp=hum.health
-                            if hp and hp>0 then
-                                local parts={}
-                                local ok3, npc_children = pcall(function() return npc:get_children() end)
-                                if ok3 and npc_children then
-                                    for k=1,#npc_children do
-                                        local p=npc_children[k]
-                                        if p:is_a("BasePart") then
-                                            local size=p.size
-                                            if size then parts[p.name]={part=p,hx=size.x*0.5,hy=size.y*0.5,hz=size.z*0.5} end
-                                        end
-                                    end
-                                end
-                                result[#result+1]={name=npc.name,hum=hum,head=head,parts=parts}
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
-    world.npcs = result
-end
-
-local function update_world()
-    if not refresh_folders() then return end
-    scan_extracts() scan_items() scan_containers() scan_quests()
-end
-
-local function update_npcs()
-    if not refresh_folders() then return end
-    scan_npcs()
-end
-
-local function update_camera()
-    local pos = camera.get_position()
-    if pos then world.cam_x=pos.x world.cam_y=pos.y world.cam_z=pos.z end
-end
-
-local function cache_settings()
-    cfg.player          = safe_menu_get("delta_player_enabled")
-    cfg.player_dist     = safe_menu_get("delta_player_dist")
-    cfg.player_dist_col = safe_menu_get_color("delta_player_dist")
-    cfg.player_range    = safe_menu_get("delta_player_range")
-    cfg.extract         = safe_menu_get("delta_extract_enabled")
-    cfg.extract_col     = safe_menu_get_color("delta_extract_enabled")
-    cfg.extract_range   = safe_menu_get("delta_extract_range")
-    cfg.container       = safe_menu_get("delta_container_enabled")
-    cfg.container_col   = safe_menu_get_color("delta_container_enabled")
-    cfg.container_range = safe_menu_get("delta_container_range")
-    cfg.contents        = safe_menu_get("delta_container_contents")
-    cfg.quest           = safe_menu_get("delta_quest_enabled")
-    cfg.quest_col       = safe_menu_get_color("delta_quest_enabled")
-    cfg.quest_range     = safe_menu_get("delta_quest_range")
-    cfg.items           = safe_menu_get("delta_items_enabled")
-    cfg.items_col       = safe_menu_get_color("delta_items_enabled")
-    cfg.items_range     = safe_menu_get("delta_items_range")
-    cfg.corpse          = safe_menu_get("delta_corpse_enabled")
-    cfg.corpse_col      = safe_menu_get_color("delta_corpse_enabled")
-    cfg.corpse_range    = safe_menu_get("delta_corpse_range")
-    cfg.npc             = safe_menu_get("delta_npc_enabled")
-    cfg.npc_range       = safe_menu_get("delta_npc_range")
-    cfg.npc_box         = safe_menu_get("delta_npc_box")
-    cfg.npc_box_col     = safe_menu_get_color("delta_npc_box")
-    cfg.npc_hp          = safe_menu_get("delta_npc_health")
-    cfg.npc_name        = safe_menu_get("delta_npc_name")
-    cfg.npc_name_col    = safe_menu_get_color("delta_npc_name")
-    cfg.npc_dist        = safe_menu_get("delta_npc_dist")
-    cfg.npc_dist_col    = safe_menu_get_color("delta_npc_dist")
-    cfg.npc_skel        = safe_menu_get("delta_npc_skeleton")
-    cfg.npc_skel_col    = safe_menu_get_color("delta_npc_skeleton")
-    cfg.aim             = safe_menu_get("delta_npc_aim_enabled")
-    cfg.aim_fov         = safe_menu_get("delta_npc_aim_fov")
-    cfg.aim_smooth      = safe_menu_get("delta_npc_aim_smooth")
-    cfg.aim_bone        = safe_menu_get("delta_npc_aim_bone")
-    cfg.aim_prediction  = safe_menu_get("delta_npc_aim_prediction")
-    cfg.aim_draw_fov    = safe_menu_get("delta_npc_aim_draw_fov")
-    cfg.claymore        = safe_menu_get("delta_claymore_enabled")
-    cfg.claymore_col    = safe_menu_get_color("delta_claymore_enabled")
-    cfg.claymore_range  = safe_menu_get("delta_claymore_range")
-    cfg.claymore_names  = safe_menu_get("delta_claymore_names")
-end
-
-local function draw_extracts()
-    if not cfg.extract then return end
-    local ws = game.workspace
-    if not ws then return end
-    local no_col = ws:find_first_child("NoCollision")
-    local exits = no_col and no_col:find_first_child("ExitLocations")
-    if not exits then return end
-    local ok, children = pcall(function() return exits:get_children() end)
-    if not ok or not children then return end
-    local me = entity.get_local_player()
-    local mpos = me and me.position
-    local cx = mpos and mpos.x or world.cam_x
-    local cy = mpos and mpos.y or world.cam_y
-    local cz = mpos and mpos.z or world.cam_z
-    for _, part in ipairs(children) do
-        if part:is_a("BasePart") then
-            local pos = part.position
-            if pos then
-                local dist = get_dist(pos.x, pos.y, pos.z, cx, cy, cz)
-                if dist <= cfg.extract_range / 0.28 then
-                    local sx, sy, vis = draw.world_to_screen(pos.x, pos.y, pos.z)
-                    if vis then
-                        local dist_m = math.floor(dist * 0.28)
-                        local txt = format("%s [%dm]", part.name, dist_m)
-                        local tw = draw.get_text_size(txt, 14)
-                        draw.text(sx - tw * 0.5, sy, txt, cfg.extract_col, 14)
-                    end
-                end
-            end
-        end
-    end
-end
-
-local function draw_items()
-    if not cfg.items then return end
-    local me = entity.get_local_player()
-    local mpos = me and me.position
-    local cx = mpos and mpos.x or world.cam_x
-    local cy = mpos and mpos.y or world.cam_y
-    local cz = mpos and mpos.z or world.cam_z
-    for i=1,#world.items do
-        local d=world.items[i]
-        if d.part then
-            local pos=d.part.position
-            if pos then
-                local dist=get_dist(pos.x,pos.y,pos.z,cx,cy,cz)
-                if dist<=cfg.items_range/0.28 then
-                    local sx,sy,vis=draw.world_to_screen(pos.x,pos.y,pos.z)
-                    if vis then
-                        local dist_m=math.floor(dist*0.28)
-                        local txt=format("%s [%dm]",d.name,dist_m)
-                        local tw=draw.get_text_size(txt,14)
-                        draw.text(sx-tw*0.5,sy,txt,cfg.items_col,14)
-                    end
-                end
-            end
-        end
-    end
-end
-
-local function draw_corpses()
-    if not cfg.corpse then return end
-    local me = entity.get_local_player()
-    local mpos = me and me.position
-    local cx = mpos and mpos.x or world.cam_x
-    local cy = mpos and mpos.y or world.cam_y
-    local cz = mpos and mpos.z or world.cam_z
-    for i = 1, #world.corpses do
-        local d = world.corpses[i]
-        if d.part then
-            local pos = d.part.position
-            if pos then
-                local dist = get_dist(pos.x, pos.y, pos.z, cx, cy, cz)
-                if dist <= cfg.corpse_range / 0.28 then
-                    local sx, sy, vis = draw.world_to_screen(pos.x, pos.y, pos.z)
-                    if vis then
-                        local dist_m = math.floor(dist * 0.28)
-                        local txt = format("Corpse: %s [%dm]", d.name, dist_m)
-                        local tw = draw.get_text_size(txt, 14)
-                        draw.text(sx - tw * 0.5, sy, txt, cfg.corpse_col, 14)
-                    end
-                end
-            end
-        end
-    end
-end
-
-local function draw_containers()
-    if not cfg.container or #world.containers==0 then return end
-    local me = entity.get_local_player()
-    local mpos = me and me.position
-    local cx = mpos and mpos.x or world.cam_x
-    local cy = mpos and mpos.y or world.cam_y
-    local cz = mpos and mpos.z or world.cam_z
-    for i=1,#world.containers do
-        local d=world.containers[i]
-        if d.part then
-            local pos=d.part.position
-            if pos then
-                local dist=get_dist(pos.x,pos.y,pos.z,cx,cy,cz)
-                if dist<=cfg.container_range/0.28 then
-                    local sx,sy,vis=draw.world_to_screen(pos.x,pos.y,pos.z)
-                    if vis then
-                        local dist_m=math.floor(dist*0.28)
-                        local txt=format("%s [%dm]",d.name,dist_m)
-                        local tw=draw.get_text_size(txt,14)
-                        draw.text(sx-tw*0.5,sy,txt,cfg.container_col,14)
-                        if cfg.contents and d.contents then
-                            local ly=sy+14
-                            for j=1,#d.contents do
-                                local itxt=d.contents[j]
-                                local itw=draw.get_text_size(itxt,11)
-                                draw.text(sx-itw*0.5,ly,itxt,colors.gray,11)
-                                ly=ly+12
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
-end
-
-local function draw_quests()
-    if not cfg.quest or #world.quests==0 then return end
-    local me = entity.get_local_player()
-    local mpos = me and me.position
-    local cx = mpos and mpos.x or world.cam_x
-    local cy = mpos and mpos.y or world.cam_y
-    local cz = mpos and mpos.z or world.cam_z
-    for i=1,#world.quests do
-        local d=world.quests[i]
-        if d.part then
-            local pos=d.part.position
-            if pos then
-                local dist=get_dist(pos.x,pos.y,pos.z,cx,cy,cz)
-                if dist<=cfg.quest_range/0.28 then
-                    local sx,sy,vis=draw.world_to_screen(pos.x,pos.y,pos.z)
-                    if vis then
-                        local dist_m=math.floor(dist*0.28)
-                        local txt=format("%s [%dm]",d.name,dist_m)
-                        local tw=draw.get_text_size(txt,14)
-                        draw.text(sx-tw*0.5,sy,txt,cfg.quest_col,14)
-                    end
-                end
-            end
-        end
-    end
-end
-
-local function get_bounds(parts)
-    local min_x,min_y,max_x,max_y=10000,10000,-10000,-10000
-    local valid=false
-    for _,d in pairs(parts) do
-        if d.part then
-            local p=d.part.position
-            if p then
-                local px,py,pz=p.x,p.y,p.z
-                for ox=-1,1,2 do for oy=-1,1,2 do for oz=-1,1,2 do
-                    local sx,sy,vis=draw.world_to_screen(px+d.hx*ox,py+d.hy*oy,pz+d.hz*oz)
-                    if vis then
-                        valid=true
-                        if sx<min_x then min_x=sx end if sx>max_x then max_x=sx end
-                        if sy<min_y then min_y=sy end if sy>max_y then max_y=sy end
-                    end
-                end end end
-            end
-        end
-    end
-    return valid and {x=min_x,y=min_y,w=max_x-min_x,h=max_y-min_y} or nil
-end
-
-local function draw_npcs()
-    if not cfg.npc or #world.npcs==0 then return end
-    local me = entity.get_local_player()
-    local mpos = me and me.position
-    local cx = mpos and mpos.x or world.cam_x
-    local cy = mpos and mpos.y or world.cam_y
-    local cz = mpos and mpos.z or world.cam_z
-    for i=1,#world.npcs do
-        local n=world.npcs[i]
-        if n.head and n.hum then
-            local hpos=n.head.position
-            if hpos then
-                local hp=n.hum.health or 0
-                local max_hp=n.hum.max_health or 100
-                if hp>0 then
-                    local dist=get_dist(hpos.x,hpos.y,hpos.z,cx,cy,cz)
-                    if dist<=cfg.npc_range/0.28 then
-                        local b=get_bounds(n.parts)
-                        if b then
-                            if cfg.npc_box then draw.box(b.x,b.y,b.w,b.h,cfg.npc_box_col,0) end
-                            if cfg.npc_hp then draw.health_bar(b.x,b.y,b.h,hp,max_hp) end
-                            local mid=b.x+b.w*0.5
-                            if cfg.npc_name then
-                                local tw=draw.get_text_size(n.name,14)
-                                draw.text(mid-tw*0.5,b.y-16,n.name,cfg.npc_name_col,14)
-                            end
-                            if cfg.npc_dist then
-                                local dist_m=math.floor(dist*0.28)
-                                local txt=format("%dm",dist_m)
-                                local tw=draw.get_text_size(txt,12)
-                                draw.text(mid-tw*0.5,b.y+b.h+6,txt,cfg.npc_dist_col,12)
-                            end
-                            if cfg.npc_skel then
-                                local screen={}
-                                for name,pd in pairs(n.parts) do
-                                    if pd.part then
-                                        local pos=pd.part.position
-                                        if pos then
-                                            local bx,by,bv=draw.world_to_screen(pos.x,pos.y,pos.z)
-                                            if bv then screen[name]={x=bx,y=by} end
-                                        end
-                                    end
-                                end
-                                for j=1,#skeleton_pairs do
-                                    local pair=skeleton_pairs[j]
-                                    local a,sb=screen[pair[1]],screen[pair[2]]
-                                    if a and sb then draw.line(a.x,a.y,sb.x,sb.y,cfg.npc_skel_col,1.5) end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
-end
-
-local function draw_claymores()
-    if not cfg.claymore then return end
-    local ws = game.workspace
-    if not ws then return end
-    local ai_zones = ws:find_first_child("AiZones")
-    if not ai_zones then return end
-    local claymores_folder = ai_zones:find_first_child("Claymores")
-    if not claymores_folder then return end
-    local me = entity.get_local_player()
-    local mpos = me and me.position
-    local cx = mpos and mpos.x or world.cam_x
-    local cy = mpos and mpos.y or world.cam_y
-    local cz = mpos and mpos.z or world.cam_z
-    local ok, children = pcall(function() return claymores_folder:get_children() end)
-    if not ok or not children then return end
-    local red = { 1, 0.15, 0.15, 1 }
-    for _, model in ipairs(children) do
-        if model.name == "MON50" then
-            local mine = model:find_first_child("MeshPart")
-            local trig = model:find_first_child("Trigger")
-            if mine then
-                local minepos = mine.position
-                if minepos then
-                    local dist = get_dist(minepos.x, minepos.y, minepos.z, cx, cy, cz)
-                    if dist <= cfg.claymore_range / 0.28 then
-                        local sz = mine.size
-                        local hx = sz and sz.x * 0.5 or 1
-                        local hy = sz and sz.y * 0.5 or 1
-                        local hz = sz and sz.z * 0.5 or 1
-                        local min_x, min_y, max_x, max_y = 10000, 10000, -10000, -10000
-                        local valid = false
-                        for ox=-1,1,2 do for oy=-1,1,2 do for oz=-1,1,2 do
-                            local sx, sy, vis = draw.world_to_screen(
-                                minepos.x+hx*ox, minepos.y+hy*oy, minepos.z+hz*oz)
-                            if vis then
-                                valid = true
-                                if sx < min_x then min_x = sx end if sx > max_x then max_x = sx end
-                                if sy < min_y then min_y = sy end if sy > max_y then max_y = sy end
-                            end
-                        end end end
-                        if valid then
-                            local bw = max_x - min_x
-                            local bh = max_y - min_y
-                            draw.box(min_x, min_y, bw, bh, cfg.claymore_col, 1)
-                            if cfg.claymore_names then
-                                local dist_m = math.floor(dist * 0.28)
-                                local txt = format("Claymore [%dm]", dist_m)
-                                local tw = draw.get_text_size(txt, 13)
-                                draw.text(min_x + (bw - tw) * 0.5, min_y - 16, txt, cfg.claymore_col, 13)
-                            end
-                        end
-                        if trig then
-                            local mx2, my2, mvis = draw.world_to_screen(minepos.x, minepos.y, minepos.z)
-                            if mvis then
-                                local tpos = trig.position
-                                if tpos then
-                                    local tx2, ty2, tvis = draw.world_to_screen(tpos.x, tpos.y, tpos.z)
-                                    if tvis then draw.line(mx2, my2, tx2, ty2, red, 2) end
-                                end
-                                local ok2, trig_children = pcall(function() return trig:get_children() end)
-                                if ok2 and trig_children then
-                                    for _, tp in ipairs(trig_children) do
-                                        if tp:is_a("BasePart") then
-                                            local tppos = tp.position
-                                            if tppos then
-                                                local tx3, ty3, tv3 = draw.world_to_screen(tppos.x, tppos.y, tppos.z)
-                                                if tv3 then draw.line(mx2, my2, tx3, ty3, red, 2) end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
-end
-
-local function draw_players()
-    if not cfg.player then return end
-    local players = entity.get_players()
-    if not players then return end
-    local me = entity.get_local_player()
-    local mpos = me and me.position
-    if not mpos then return end
-    for i = 1, #players do
-        local p = players[i]
-        if p and p.is_valid and p.is_alive and not p.is_local then
-            local pos = p.position
-            if pos then
-                local dx = pos.x - mpos.x
-                local dy = pos.y - mpos.y
-                local dz = pos.z - mpos.z
-                local dist_studs = math.sqrt(dx*dx + dy*dy + dz*dz)
-                if dist_studs <= cfg.player_range / 0.28 then
-                    local sx, sy, vis = draw.world_to_screen(pos.x, pos.y, pos.z)
-                    if vis and cfg.player_dist then
-                        local dist_m = math.floor(dist_studs * 0.28)
-                        local txt = format("%dm", dist_m)
-                        local tw = draw.get_text_size(txt, 14)
-                        draw.text(sx - tw * 0.5, sy, txt, cfg.player_dist_col, 14)
-                    end
-                end
-            end
-        end
-    end
-end
-
-local function run_aimbot()
-    if not cfg.aim then return end
-    local scx,scy=input.get_screen_center()
-    if cfg.aim_draw_fov then
-        draw.circle(scx,scy,cfg.aim_fov,{1,1,1,0.3},64)
-        if cfg.aim_prediction then
-            local tw=draw.get_text_size("[PREDICT]",12)
-            draw.text(scx-tw*0.5,scy+cfg.aim_fov+5,"[PREDICT]",{0,1,1,1},12)
-        end
-    end
-    local key=safe_menu_get_key("delta_npc_aim_enabled")
-    if key==0 then key=2 end
-    if not input.is_key_down(key) then return end
-    local cx,cy,cz=world.cam_x,world.cam_y,world.cam_z
-    local best_fov=cfg.aim_fov
-    local best_pos=nil
-    local bone_name=aim_bones[cfg.aim_bone]
-    for i=1,#world.npcs do
-        local n=world.npcs[i]
-        if n.hum and n.hum.health>0 then
-            local pd=n.parts[bone_name]
-            if pd and pd.part then
-                local pos=pd.part.position
-                if pos then
-                    local dist_to_target=get_dist(pos.x,pos.y,pos.z,cx,cy,cz)
-                    local aim_x,aim_y,aim_z=pos.x,pos.y,pos.z
-                    if cfg.aim_prediction then
-                        local vel=pd.part.velocity
-                        if vel then
-                            local pred_scale=dist_to_target/1000
-                            aim_x=pos.x+vel.x*pred_scale
-                            aim_y=pos.y+vel.y*pred_scale
-                            aim_z=pos.z+vel.z*pred_scale
-                        end
-                    end
-                    local sx,sy,vis=draw.world_to_screen(aim_x,aim_y,aim_z)
-                    if vis then
-                        local dx,dy=sx-scx,sy-scy
-                        local fov=sqr(dx*dx+dy*dy)
-                        if fov<best_fov then best_fov=fov best_pos={x=aim_x,y=aim_y,z=aim_z} end
-                    end
-                end
-            end
-        end
-    end
-    if best_pos then camera.look_at(best_pos.x,best_pos.y,best_pos.z,cfg.aim_smooth) end
-end
-
-
-local MOD_NAMES = {
-    ["solter"]=true,["kupczakk"]=true,["nutsock112"]=true,["thecrafter103"]=true,
-    ["forkycheck"]=true,["necanwx"]=true,["kbhgaming480"]=true,["lumivoxi"]=true,
-    ["natan_113"]=true,["ianeyeballs"]=true,["imblu1"]=true,["gribler1"]=true,
-    ["e2equl"]=true,["hhauoli"]=true,["farlan9"]=true,["zondering"]=true,
-    ["strawberry_banana0"]=true,["exp_l0"]=true,["raechevel00"]=true,["yuckey47"]=true,
-    ["shawnybear6"]=true,["deadlymagicaz"]=true,["jannu2010"]=true,["duhacek1112"]=true,
-    ["sparky_deeny"]=true,["aidendenkule13"]=true,["hakaji"]=true,["c7asher"]=true,
-    ["dominik7772"]=true,["atlas_thegamer"]=true,["accldentshappen"]=true,["libertadwar"]=true,
-}
-
-local detected_mods = {}
-
-local function update_mod_check()
+local function scan_mods()
     local found = {}
     local players = entity.get_players()
+    local ws = game.workspace
+    local psvc = game.players
     if players then
         for i = 1, #players do
             local p = players[i]
-            if p and p.is_valid and p.name then
+            if p and p.is_valid and p.name and not p.is_local then
                 local lower = p.name:lower()
-                if MOD_NAMES[lower] then
-                    found[#found + 1] = p.name
+                local is_mod = MOD_NAMES[lower] and true or false
+                local age = 0
+                if psvc then
+                    local psi = psvc:find_first_child(p.name)
+                    if psi then local _, a = pcall(function() return psi.AccountAge end) age = a or 0 end
+                end
+                if is_mod or age < 30 then
+                    found[#found+1] = { name = p.name, age = age, is_mod = is_mod }
                 end
             end
         end
     end
-    detected_mods = found
+    mod_list = found
 end
 
-local function draw_mod_alert()
-    if not safe_menu_get("delta_mod_alert_enabled") then return end
-    local mode = safe_menu_get("delta_mod_alert_mode") or 1
-    local count = #detected_mods
-    if mode == 1 and count == 0 then return end
-    local sw, sh = utility.get_screen_size()
-    local label = count > 0 and ("MODS IN SERVER: " .. count) or "NO MODS IN SERVER"
-    local fs = 18
-    local tw, th = draw.get_text_size(label, fs)
-    local x = sw * 0.5 - tw * 0.5
-    local y = 12
-    local text_col   = count > 0 and {1, 0.08, 0.08, 1} or {0.3, 1, 0.3, 1}
-    local border_col = count > 0 and {1, 0.1, 0.1, 0.9} or {0.2, 0.9, 0.2, 0.9}
-    draw.rect_filled(x - 8, y - 4, tw + 16, th + 8, {0, 0, 0, 0.7}, 4)
-    draw.rect(x - 8, y - 4, tw + 16, th + 8, border_col, 3, 1.5)
-    draw.text(x, y, label, text_col, fs)
-end
-
-
-local slf_panel = { x = 20, y = 200, w = 280, dragging = false, drag_ox = 0, drag_oy = 0 }
-local SLF_TITLE_H = 24
-local SLF_PAD     = 8
-local SLF_LINE_H  = 16
-local SLF_FONT    = 13
-local SLF_FONT_S  = 11
-
-local slf_col_bg      = { 0.05, 0.05, 0.07, 0.96 }
-local slf_col_title   = { 0.07, 0.07, 0.10, 1.00 }
-local slf_col_border  = { 0.18, 0.72, 0.84, 1.00 }
-local slf_col_accent  = { 0.18, 0.72, 0.84, 1.00 }
-local slf_col_dim     = { 0.25, 0.25, 0.30, 1.00 }
-local slf_col_player  = { 1.00, 1.00, 1.00, 1.00 }
-local slf_col_item    = { 0.35, 0.90, 0.45, 1.00 }
-local slf_col_none    = { 0.45, 0.45, 0.50, 1.00 }
-local slf_col_sep     = { 0.18, 0.72, 0.84, 0.3  }
-
-local SLF_TRACKED_ITEMS = {
-    "GPU", "Gold50g", "SPSh44", "FlareGun", "Mag556Rnd100",
-    "SOCOM556", "Reapir", "HSPV", "TitanShield",
-}
-
-local slf_results = {}
-
-local function slf_scan()
+local function scan_player_loot()
     local found = {}
     for _, d in ipairs(cached_players) do
         local p = d.entity
         if p and p.is_valid and p.is_alive and not p.is_local then
             local matched = {}
             for _, item in ipairs(d.inventory) do
-                local item_lower = item:lower()
-                for _, tracked in ipairs(SLF_TRACKED_ITEMS) do
-                    if item_lower:find(tracked:lower(), 1, true) then
-                        matched[#matched + 1] = item
-                        break
-                    end
-                end
+                if is_valuable(item) or is_weapon(item) then matched[#matched+1] = item end
             end
-            if #matched > 0 then
-                found[#found + 1] = { name = d.name, items = matched }
-            end
+            if #matched > 0 then found[#found+1] = { name = d.name, items = matched } end
         end
     end
     slf_results = found
 end
 
-local function draw_slf_panel()
-    if not safe_menu_get("delta_slf_enabled") then slf_panel.dragging = false return end
-    local results = slf_results
-    local num_results = #results
-    local panel_h = SLF_TITLE_H + SLF_PAD
-    if num_results == 0 then
-        panel_h = panel_h + SLF_LINE_H + SLF_PAD
-    else
-        for _, entry in ipairs(results) do
-            panel_h = panel_h + SLF_LINE_H
-            panel_h = panel_h + (#entry.items * SLF_LINE_H)
-            panel_h = panel_h + 6
+-- =====================================================================
+-- SETTINGS CACHE  (read once per frame, not per draw call)
+-- =====================================================================
+local cfg = {}
+local function cache_settings()
+    cfg.player            = sg("delta_player_enabled")
+    cfg.player_box        = sg("delta_player_box")
+    cfg.player_box_style  = sg("delta_player_box_style")
+    cfg.player_box_col    = sgc("delta_player_box")
+    cfg.player_skel       = sg("delta_player_skeleton")
+    cfg.player_skel_col   = sgc("delta_player_skeleton")
+    cfg.player_hp         = sg("delta_player_health")
+    cfg.player_name       = sg("delta_player_name")
+    cfg.player_name_col   = sgc("delta_player_name")
+    cfg.player_dist       = sg("delta_player_dist")
+    cfg.player_dist_col   = sgc("delta_player_dist")
+    cfg.player_tracers    = sg("delta_player_tracers")
+    cfg.player_tracer_col = sgc("delta_player_tracers")
+    cfg.player_range      = sg("delta_player_range")
+
+    cfg.npc            = sg("delta_npc_enabled")
+    cfg.npc_box        = sg("delta_npc_box")
+    cfg.npc_box_style  = sg("delta_npc_box_style")
+    cfg.npc_box_col    = sgc("delta_npc_box")
+    cfg.npc_skel       = sg("delta_npc_skeleton")
+    cfg.npc_skel_col   = sgc("delta_npc_skeleton")
+    cfg.npc_hp         = sg("delta_npc_health")
+    cfg.npc_name       = sg("delta_npc_name")
+    cfg.npc_name_col   = sgc("delta_npc_name")
+    cfg.npc_dist       = sg("delta_npc_dist")
+    cfg.npc_dist_col   = sgc("delta_npc_dist")
+    cfg.npc_range      = sg("delta_npc_range")
+    cfg.aim            = sg("delta_npc_aim_enabled")
+    cfg.aim_fov        = sg("delta_npc_aim_fov")
+    cfg.aim_smooth     = sg("delta_npc_aim_smooth")
+    cfg.aim_bone       = sg("delta_npc_aim_bone")
+    cfg.aim_pred       = sg("delta_npc_aim_prediction")
+    cfg.aim_draw_fov   = sg("delta_npc_aim_draw_fov")
+    cfg.aim_fov_col    = sgc("delta_npc_aim_draw_fov")
+
+    cfg.extract           = sg("delta_extract_enabled")
+    cfg.extract_col       = sgc("delta_extract_enabled")
+    cfg.extract_box       = sg("delta_extract_box")
+    cfg.extract_range     = sg("delta_extract_range")
+    cfg.container         = sg("delta_container_enabled")
+    cfg.container_col     = sgc("delta_container_enabled")
+    cfg.container_box     = sg("delta_container_box")
+    cfg.container_contents= sg("delta_container_contents")
+    cfg.container_range   = sg("delta_container_range")
+    cfg.quest             = sg("delta_quest_enabled")
+    cfg.quest_col         = sgc("delta_quest_enabled")
+    cfg.quest_box         = sg("delta_quest_box")
+    cfg.quest_range       = sg("delta_quest_range")
+    cfg.items             = sg("delta_items_enabled")
+    cfg.items_col         = sgc("delta_items_enabled")
+    cfg.items_box         = sg("delta_items_box")
+    cfg.items_range       = sg("delta_items_range")
+    cfg.corpse            = sg("delta_corpse_enabled")
+    cfg.corpse_col        = sgc("delta_corpse_enabled")
+    cfg.corpse_box        = sg("delta_corpse_box")
+    cfg.corpse_contents   = sg("delta_corpse_contents")
+    cfg.corpse_range      = sg("delta_corpse_range")
+    cfg.claymore          = sg("delta_claymore_enabled")
+    cfg.claymore_col      = sgc("delta_claymore_enabled")
+    cfg.claymore_names    = sg("delta_claymore_names")
+    cfg.claymore_range    = sg("delta_claymore_range")
+
+    cfg.boss       = sg("delta_boss_enabled")
+    cfg.wlf        = sg("delta_wlf_enabled")
+    cfg.plf        = sg("delta_plf_enabled")
+    cfg.mod_alert  = sg("delta_mod_alert_enabled")
+    cfg.mod_mode   = sg("delta_mod_alert_mode")
+    cfg.watermark  = sg("delta_watermark_enabled")
+    cfg.fullbright = sg("delta_fullbright")
+    cfg.crosshair          = sg("delta_crosshair")
+    cfg.crosshair_style    = sg("delta_crosshair_style")
+    cfg.crosshair_size     = sg("delta_crosshair_size")
+    cfg.crosshair_thick    = sg("delta_crosshair_thickness")
+    cfg.crosshair_col_on   = sg("delta_crosshair_color")
+    cfg.crosshair_col      = sgc("delta_crosshair_color")
+    cfg.crosshair_outline  = sg("delta_crosshair_outline")
+    cfg.no_recoil          = sg("delta_no_recoil")
+    cfg.fire_rate          = sg("delta_fire_rate")
+    cfg.fire_rate_amount   = sg("delta_fire_rate_amount")
+end
+
+-- =====================================================================
+-- DRAW UTILITIES
+-- =====================================================================
+local function draw_fov_circle(cx, cy, r, col, t)
+    draw.circle(cx, cy, r, col, 48, t or 1)
+end
+
+local function start_drag(panel, mx, my, pw, title_h)
+    if not panel.dragging then
+        if mx >= panel.x and mx <= panel.x + pw and my >= panel.y and my <= panel.y + title_h then
+            panel.dragging = true
+            panel.drag_ox = mx - panel.x
+            panel.drag_oy = my - panel.y
         end
-        panel_h = panel_h + SLF_PAD
+    else
+        panel.x = mx - panel.drag_ox
+        panel.y = my - panel.drag_oy
     end
-    local pw = slf_panel.w
+end
+
+local function handle_drag(panel, pw, title_h)
     local mx, my = utility.get_mouse_pos()
     local lmb = input.is_key_down(0x01)
-    if lmb then
-        if not slf_panel.dragging then
-            if mx >= slf_panel.x and mx <= slf_panel.x + pw and my >= slf_panel.y and my <= slf_panel.y + SLF_TITLE_H then
-                slf_panel.dragging = true
-                slf_panel.drag_ox = mx - slf_panel.x
-                slf_panel.drag_oy = my - slf_panel.y
-            end
-        else
-            slf_panel.x = mx - slf_panel.drag_ox
-            slf_panel.y = my - slf_panel.drag_oy
-        end
-    else
-        slf_panel.dragging = false
+    if lmb then start_drag(panel, mx, my, pw, title_h or TITLE_H)
+    else panel.dragging = false end
+end
+
+local function draw_panel_frame(px, py, pw, ph, title)
+    draw.rect(px-1, py-1, pw+2, ph+2, {0.18, 0.72, 0.84, 0.15}, 5, 1)
+    draw.rect_filled(px, py, pw, ph, COL.bg, 4)
+    draw.rect_filled(px, py, pw, TITLE_H, COL.title, 4)
+    draw.rect_filled(px, py, 2, TITLE_H, COL.border, 0)
+    draw.line(px, py+TITLE_H, px+pw, py+TITLE_H, COL.border, 1)
+    draw.rect(px, py, pw, ph, {0.18, 0.72, 0.84, 0.5}, 4, 1)
+    draw.text(px+PAD, py+5, title, COL.accent, FONT)
+    local hw = draw.get_text_size("drag ::", 10)
+    draw.text(px+pw-hw-PAD, py+6, "drag ::", COL.dim, 10)
+end
+
+local function draw_section_header(px, ly, pw, label, col)
+    draw.rect_filled(px, ly, pw, SEC_H, COL.sec_bg, 0)
+    draw.rect_filled(px, ly, 2, SEC_H, col, 0)
+    draw.line(px, ly+SEC_H, px+pw, ly+SEC_H, COL.sec_line, 1)
+    local tw = draw.get_text_size(label, 10)
+    draw.text(px + (pw-tw)*0.5, ly+4, label, col, 10)
+    return ly + SEC_H
+end
+
+local function clamp_list(list, max_n)
+    if #list <= max_n then return list end
+    local out = {}
+    for i = 1, max_n do out[i] = list[i] end
+    return out
+end
+
+-- =====================================================================
+-- ESP DRAWERS
+-- =====================================================================
+local function draw_character_esp(model, display_name, hum, root, opts)
+    local corners = get_model_bounds(model)
+    if not corners then return end
+    local anchors = get_box_anchors(corners)
+    if not anchors.top.vis and not anchors.bot.vis then return end
+
+    if opts.box then
+        if opts.box_style == 1 then draw_3d_corner_box(corners, opts.box_col, 1)
+        else draw_3d_box(corners, opts.box_col, 1) end
     end
-    local px, py = slf_panel.x, slf_panel.y
-    draw.rect(px-1, py-1, pw+2, panel_h+2, {0.18, 0.72, 0.84, 0.15}, 5, 1)
-    draw.rect_filled(px, py, pw, panel_h, slf_col_bg, 4)
-    draw.rect_filled(px, py, pw, SLF_TITLE_H, slf_col_title, 4)
-    draw.rect_filled(px, py, 2, SLF_TITLE_H, slf_col_border, 0)
-    draw.line(px, py + SLF_TITLE_H, px + pw, py + SLF_TITLE_H, slf_col_border, 1)
-    draw.rect(px, py, pw, panel_h, {0.18, 0.72, 0.84, 0.5}, 4, 1)
-    local title = "Server Loot Finder"
-    if num_results > 0 then title = title .. "  [" .. num_results .. "]" end
-    draw.text(px + SLF_PAD + 2, py + 5, title, slf_col_accent, SLF_FONT)
-    local hint = "drag ::"
-    local hw = draw.get_text_size(hint, 10)
-    draw.text(px + pw - hw - SLF_PAD, py + 6, hint, slf_col_dim, 10)
-    local ly = py + SLF_TITLE_H + SLF_PAD
-    if num_results == 0 then
-        draw.text(px + SLF_PAD, ly, "No players in server", slf_col_none, SLF_FONT)
+
+    if opts.skeleton then
+        local scr = {}
+        for j = 1, #BONE_NAMES do
+            local ok, part = pcall(function() return model:find_first_child(BONE_NAMES[j]) end)
+            if ok and part then
+                local ok2, pos = pcall(function() return part.Position end)
+                if ok2 and pos then
+                    local sx, sy, vis = draw.world_to_screen(pos.x, pos.y, pos.z)
+                    if vis then scr[BONE_NAMES[j]] = { x = sx, y = sy } end
+                end
+            end
+        end
+        for j = 1, #BONE_CONNECTIONS do
+            local a = scr[BONE_CONNECTIONS[j][1]]
+            local b = scr[BONE_CONNECTIONS[j][2]]
+            if a and b then draw.line(a.x, a.y, b.x, b.y, opts.skel_col, 1) end
+        end
+    end
+
+    if opts.health and anchors.left.vis then
+        local okh, hp   = pcall(function() return hum.Health end)
+        local okm, mhp  = pcall(function() return hum.MaxHealth end)
+        if okh and okm and hp and mhp and mhp > 0 then
+            local ratio = hp / mhp
+            local bar_w, bar_x = 4, anchors.left.x - 8
+            local bar_h = anchors.left.maxy - anchors.left.miny
+            draw.rect_filled(bar_x, anchors.left.miny, bar_w, bar_h, {0.1, 0.1, 0.1, 0.8}, 0)
+            draw.rect_filled(bar_x, anchors.left.miny + bar_h - (bar_h*ratio), bar_w, bar_h*ratio, {1-ratio, ratio, 0, 1}, 0)
+        end
+    end
+
+    if opts.name and anchors.top.vis then
+        local tw = draw.get_text_size(display_name, FONT)
+        draw.text(anchors.top.x - tw*0.5, anchors.top.y - FONT - 2, display_name, opts.name_col, FONT)
+    end
+
+    if opts.dist and anchors.bot.vis and opts.dist_m then
+        local dt = "[" .. opts.dist_m .. "m]"
+        local tw = draw.get_text_size(dt, FONT)
+        draw.text(anchors.bot.x - tw*0.5, anchors.bot.y + 2, dt, opts.dist_col, FONT)
+    end
+
+    if opts.tracers and root then
+        local ok, pos = pcall(function() return root.Position end)
+        if ok and pos then
+            local sx, sy, vis = draw.world_to_screen(pos.x, pos.y, pos.z)
+            if vis then
+                local sw, sh = draw.get_screen_size()
+                draw.line(sw*0.5, sh, sx, sy, opts.tracer_col, 1)
+            end
+        end
+    end
+end
+
+local function draw_world_item(item, range_m, color, show_box, contents)
+    local ok, pos = pcall(function() return item.part.Position end)
+    if not ok or not pos then return end
+    local mp = get_local_pos()
+    local dist_m = 0
+    if mp then dist_m = get_dist(mp.x, mp.y, mp.z, pos.x, pos.y, pos.z) * METERS_PER_STUD end
+    if dist_m > range_m then return end
+    dist_m = math.floor(dist_m)
+    local sx, sy, vis = draw.world_to_screen(pos.x, pos.y, pos.z)
+    if not vis then return end
+    local txt_y = sy
+    if show_box then
+        local box = get_part_box(item.part)
+        if box then
+            draw_oriented_box(box, color, 1)
+            local top_x = box.x + box.ux*box.hy
+            local top_y = box.y + box.uy*box.hy
+            local top_z = box.z + box.uz*box.hy
+            local _, ty, tvis = draw.world_to_screen(top_x, top_y, top_z)
+            if tvis then txt_y = ty end
+        end
+    end
+    local txt = item.name .. " [" .. dist_m .. "m]"
+    local tw = draw.get_text_size(txt, FONT)
+    draw.text(sx - tw*0.5, txt_y - FONT - 4, txt, color, FONT)
+    if contents and #contents > 0 then
+        for ci = 1, math.min(#contents, 5) do
+            txt_y = txt_y + FONT + 1
+            local ctw = draw.get_text_size(contents[ci], 11)
+            draw.text(sx - ctw*0.5, txt_y - FONT, contents[ci], {0.8, 0.8, 0.8, 0.7}, 11)
+        end
+        if #contents > 5 then
+            txt_y = txt_y + FONT + 1
+            local mtxt = "+" .. (#contents-5) .. " more..."
+            local mtw = draw.get_text_size(mtxt, 11)
+            draw.text(sx - mtw*0.5, txt_y - FONT, mtxt, {0.6, 0.6, 0.6, 0.5}, 11)
+        end
+    end
+end
+
+local function draw_claymores()
+    if not cfg.claymore then return end
+    local mp = get_local_pos()
+    for _, item in ipairs(world_cache.claymores) do
+        local ok, pos = pcall(function() return item.part.Position end)
+        if ok and pos then
+            local dist_m = (mp and get_dist(mp.x,mp.y,mp.z,pos.x,pos.y,pos.z) * METERS_PER_STUD or 0)
+            if dist_m <= cfg.claymore_range then
+                local ok2, sz = pcall(function() return item.part.Size end)
+                local hx = (sz and sz.x or 1) * 0.5
+                local hy = (sz and sz.y or 1) * 0.5
+                local hz = (sz and sz.z or 1) * 0.5
+                local mnx,mny,mxx,mxy = math.huge, math.huge, -math.huge, -math.huge
+                local valid = false
+                for ox = -1, 1, 2 do for oy = -1, 1, 2 do for oz = -1, 1, 2 do
+                    local sx, sy, vis = draw.world_to_screen(pos.x+hx*ox, pos.y+hy*oy, pos.z+hz*oz)
+                    if vis then
+                        valid = true
+                        if sx < mnx then mnx = sx end if sx > mxx then mxx = sx end
+                        if sy < mny then mny = sy end if sy > mxy then mxy = sy end
+                    end
+                end end end
+                if valid then
+                    local bw, bh = mxx-mnx, mxy-mny
+                    draw.box(mnx, mny, bw, bh, cfg.claymore_col, 0, 0)
+                    if cfg.claymore_names then
+                        local txt = "Claymore [" .. math.floor(dist_m) .. "m]"
+                        local tw = draw.get_text_size(txt, 13)
+                        draw.text(mnx + (bw-tw)*0.5, mny - 16, txt, cfg.claymore_col, 13)
+                    end
+                end
+                -- trigger beam
+                if item.trigger then
+                    local mx2, my2, mvis = draw.world_to_screen(pos.x, pos.y, pos.z)
+                    if mvis then
+                        local red = { 1, 0.15, 0.15, 1 }
+                        local okp, tp = pcall(function() return item.trigger.Position end)
+                        if okp and tp then
+                            local tx2, ty2, tvis = draw.world_to_screen(tp.x, tp.y, tp.z)
+                            if tvis then draw.line(mx2, my2, tx2, ty2, red, 2) end
+                        end
+                        local okc, tc = pcall(function() return item.trigger:get_children() end)
+                        if okc and tc then
+                            for _, tpart in ipairs(tc) do
+                                if tpart:is_a("BasePart") then
+                                    local okt, tpp = pcall(function() return tpart.Position end)
+                                    if okt and tpp then
+                                        local tx3, ty3, tv3 = draw.world_to_screen(tpp.x, tpp.y, tpp.z)
+                                        if tv3 then draw.line(mx2, my2, tx3, ty3, red, 2) end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- =====================================================================
+-- PANELS
+-- =====================================================================
+local inv_panel  = { x = 1660, y = 260, w = 260, dragging = false, drag_ox = 0, drag_oy = 0 }
+local boss_panel = { x = 5,    y = 370, w = 180, dragging = false, drag_ox = 0, drag_oy = 0 }
+local wlf_panel  = { x = 1660, y = 5,   w = 280, dragging = false, drag_ox = 0, drag_oy = 0 }
+local plf_panel  = { x = 20,   y = 200, w = 280, dragging = false, drag_ox = 0, drag_oy = 0 }
+local mod_panel  = { x = 5,    y = 5,   w = 260, dragging = false, drag_ox = 0, drag_oy = 0 }
+
+local inv_toggled = false
+local inv_last_key = false
+
+local function should_show_inv()
+    if not sg("delta_inv_enabled") then return false end
+    local mode = sg("delta_inv_mode") or 0
+    local key  = sgk("delta_inv_enabled")
+    if key == 0 then key = 0x02 end
+    if mode == 0 then return true
+    elseif mode == 1 then
+        local down = input.is_key_down(key)
+        if down and not inv_last_key then inv_toggled = not inv_toggled end
+        inv_last_key = down
+        return inv_toggled
+    else
+        inv_last_key = false
+        return input.is_key_down(key)
+    end
+end
+
+local function get_closest_player_to_crosshair()
+    if #cached_players == 0 then return nil end
+    local sw, sh = draw.get_screen_size()
+    local scx, scy = sw * 0.5, sh * 0.5
+    local best, best_d = nil, math.huge
+    for _, d in ipairs(cached_players) do
+        local p = d.entity
+        if p and p.is_valid and p.is_alive then
+            local pos = p.position
+            if pos then
+                local sx, sy, vis = draw.world_to_screen(pos.x, pos.y, pos.z)
+                if vis then
+                    local dd = sqrt((sx-scx)^2 + (sy-scy)^2)
+                    if dd < best_d then best_d = dd best = d end
+                end
+            end
+        end
+    end
+    return best
+end
+
+local function draw_inv_panel()
+    if not should_show_inv() then inv_panel.dragging = false return end
+    handle_drag(inv_panel, inv_panel.w)
+
+    local show_guns  = sg("delta_inv_show_guns")
+    local show_armor = sg("delta_inv_show_armor")
+    local show_val   = sg("delta_inv_show_val")
+    local show_other = sg("delta_inv_show_other")
+    local max_guns   = sg("delta_inv_max_guns")  or 10
+    local max_armor  = sg("delta_inv_max_armor") or 10
+    local max_val    = sg("delta_inv_max_val")   or 10
+    local max_other  = sg("delta_inv_max_other") or 5
+
+    local target = get_closest_player_to_crosshair()
+    local equipped_item = nil
+    local guns, armor, val, other = {}, {}, {}, {}
+    if target then
+        equipped_item = target.equipped
+        for _, item in ipairs(target.inventory) do
+            if is_valuable(item) then val[#val+1] = item
+            elseif is_weapon(item) then guns[#guns+1] = item
+            elseif is_armor(item) and target.worn[item] then armor[#armor+1] = item
+            elseif not is_armor(item) then other[#other+1] = item end
+        end
+    end
+    guns  = clamp_list(guns,  max_guns)
+    armor = clamp_list(armor, max_armor)
+    val   = clamp_list(val,   max_val)
+    other = clamp_list(other, max_other)
+
+    local ph = TITLE_H + PAD
+    if equipped_item and equipped_item ~= "" then ph = ph + LINE_H_L + PAD + 14 end
+    if show_guns  and #guns  > 0 then ph = ph + SEC_H + (#guns  * LINE_H_L) + 4 end
+    if show_armor and #armor > 0 then ph = ph + SEC_H + (#armor * LINE_H_L) + 4 end
+    if show_val   and #val   > 0 then ph = ph + SEC_H + (#val   * LINE_H_L) + 4 end
+    if show_other and #other > 0 then ph = ph + SEC_H + (#other * LINE_H)   + 4 end
+    if not target then ph = ph + LINE_H end
+    ph = ph + PAD
+
+    local px, py, pw = inv_panel.x, inv_panel.y, inv_panel.w
+    draw_panel_frame(px, py, pw, ph, target and target.name or "Inventory Checker")
+    local ly = py + TITLE_H + PAD
+
+    if not target then
+        draw.text(px+PAD, ly, "No players visible", COL.junk, FONT)
         return
     end
-    for i, entry in ipairs(results) do
-        local name_txt = "> " .. entry.name
-        draw.text(px + SLF_PAD, ly, name_txt, slf_col_player, SLF_FONT)
-        ly = ly + SLF_LINE_H
-        for _, item in ipairs(entry.items) do
-            local item_txt = "  - " .. item
-            draw.text(px + SLF_PAD + 4, ly, item_txt, slf_col_item, SLF_FONT_S)
-            ly = ly + SLF_LINE_H
+
+    if equipped_item and equipped_item ~= "" then
+        local col = get_item_color(equipped_item)
+        draw.text(px+PAD, ly, "EQUIPPED", COL.dim, 9)
+        draw.text(px+PAD, ly+11, equipped_item, col, FONT_L)
+        ly = ly + LINE_H_L + PAD
+        draw.line(px+PAD, ly, px+pw-PAD, ly, COL.sec_line, 1)
+        ly = ly + 4
+    end
+    if show_guns and #guns > 0 then
+        ly = draw_section_header(px, ly, pw, "GUN(S)", COL.gun)
+        for _, item in ipairs(guns) do draw.text(px+PAD+6, ly+2, item, COL.gun, FONT_L) ly = ly + LINE_H_L end
+        ly = ly + 4
+    end
+    if show_armor and #armor > 0 then
+        ly = draw_section_header(px, ly, pw, "ARMOR", COL.armor)
+        for _, item in ipairs(armor) do draw.text(px+PAD+6, ly+2, item, COL.armor, FONT_L) ly = ly + LINE_H_L end
+        ly = ly + 4
+    end
+    if show_val and #val > 0 then
+        ly = draw_section_header(px, ly, pw, "VALUABLES", COL.val)
+        for _, item in ipairs(val) do draw.text(px+PAD+6, ly+2, item, COL.val, FONT_L) ly = ly + LINE_H_L end
+        ly = ly + 4
+    end
+    if show_other and #other > 0 then
+        ly = draw_section_header(px, ly, pw, "OTHER", COL.junk)
+        for _, item in ipairs(other) do draw.text(px+PAD+6, ly+2, item, COL.junk, FONT) ly = ly + LINE_H end
+    end
+end
+
+local function hp_color(hp, max_hp)
+    if max_hp <= 0 then return COL.none end
+    local pct = hp / max_hp
+    if pct > 0.5 then return COL.alive end
+    if pct > 0.2 then return COL.warn end
+    return COL.dead
+end
+
+local function draw_boss_panel()
+    if not cfg.boss then boss_panel.dragging = false return end
+    handle_drag(boss_panel, boss_panel.w)
+    local ph = TITLE_H + SEC_H + (#boss_defs * LINE_H) + 4 + SEC_H + (#vehicle_defs * LINE_H) + 4 + PAD
+    local px, py, pw = boss_panel.x, boss_panel.y, boss_panel.w
+    draw_panel_frame(px, py, pw, ph, "Boss Tracker")
+    local ly = py + TITLE_H
+    ly = draw_section_header(px, ly, pw, "BOSSES", COL.accent)
+    for i, entry in ipairs(boss_data) do
+        local row_y = ly + (i-1) * LINE_H
+        draw.text(px+PAD+4, row_y+3, entry.name, COL.white, FONT-1)
+        local stxt, scol
+        if entry.status == "alive" then
+            local pct = entry.max_hp > 0 and math.floor(entry.hp / entry.max_hp * 100) or 0
+            stxt = format("%d/%d (%d%%)", entry.hp, entry.max_hp, pct)
+            if entry.dist >= 0 then stxt = stxt .. "  " .. entry.dist .. "m" end
+            scol = hp_color(entry.hp, entry.max_hp)
+        elseif entry.status == "dead" then stxt = "Dead" scol = COL.dead
+        else stxt = "Not Spawned" scol = COL.none end
+        local sw = draw.get_text_size(entry.name, FONT-1)
+        draw.text(px+PAD+4+sw+6, row_y+3, stxt, scol, FONT-1)
+    end
+    ly = ly + (#boss_defs * LINE_H) + 4
+    ly = draw_section_header(px, ly, pw, "VEHICLES", COL.accent)
+    for i, entry in ipairs(vehicle_data) do
+        local row_y = ly + (i-1) * LINE_H
+        draw.text(px+PAD+4, row_y+3, entry.name, COL.white, FONT-1)
+        local stxt, scol
+        if entry.status == "spawned" then
+            stxt = "Spawned"
+            if entry.dist >= 0 then stxt = stxt .. "  " .. entry.dist .. "m" end
+            scol = COL.vehicle
+        else stxt = "Not Spawned" scol = COL.none end
+        local sw = draw.get_text_size(entry.name, FONT-1)
+        draw.text(px+PAD+4+sw+6, row_y+3, stxt, scol, FONT-1)
+    end
+end
+
+-- World Loot Finder: nearby containers/corpses holding valuables
+local function draw_wlf_panel()
+    if not cfg.wlf then wlf_panel.dragging = false return end
+    handle_drag(wlf_panel, wlf_panel.w)
+    local mp = get_local_pos()
+    local loot = {}
+    if mp then
+        local function scan_list(list, label)
+            for _, item in ipairs(list) do
+                if item.part and item.contents then
+                    local ok, pos = pcall(function() return item.part.Position end)
+                    if ok and pos then
+                        local dist = get_dist(mp.x,mp.y,mp.z,pos.x,pos.y,pos.z) * METERS_PER_STUD
+                        local vals = {}
+                        for _, c in ipairs(item.contents) do
+                            if is_valuable(c) or is_weapon(c) then vals[#vals+1] = c end
+                        end
+                        if #vals > 0 then loot[#loot+1] = { name = item.name, label = label, dist = math.floor(dist), pos = pos, vals = vals } end
+                    end
+                end
+            end
         end
-        if i < num_results then
-            draw.line(px + SLF_PAD, ly + 1, px + pw - SLF_PAD, ly + 1, slf_col_sep, 1)
+        scan_list(world_cache.containers, "Container")
+        scan_list(world_cache.corpses, "Corpse")
+        table.sort(loot, function(a, b) return a.dist < b.dist end)
+    end
+    local shown = clamp_list(loot, 8)
+    local px, py, pw = wlf_panel.x, wlf_panel.y, wlf_panel.w
+    if #shown == 0 then
+        draw_panel_frame(px, py, pw, TITLE_H + PAD + LINE_H + PAD, "World Loot Finder")
+        draw.text(px+PAD, py+TITLE_H+PAD, "No valuable loot nearby", COL.dim, FONT-1)
+        return
+    end
+    local ph = TITLE_H + PAD
+    for _, l in ipairs(shown) do ph = ph + LINE_H + (#l.vals * 14) end
+    ph = ph + PAD
+    draw_panel_frame(px, py, pw, ph, "World Loot Finder")
+    local ly = py + TITLE_H + PAD
+    -- tracer to closest
+    local sx, sy, vis = draw.world_to_screen(shown[1].pos.x, shown[1].pos.y, shown[1].pos.z)
+    if vis then
+        local sw, sh = draw.get_screen_size()
+        draw.line(sw*0.5, sh*0.5, sx, sy, {0.35, 0.9, 0.45, 0.4}, 1)
+    end
+    for _, l in ipairs(shown) do
+        draw.text(px+PAD, ly, l.label .. ": " .. l.name .. " [" .. l.dist .. "m]", COL.val, FONT-1)
+        ly = ly + LINE_H
+        for _, v in ipairs(l.vals) do
+            draw.text(px+PAD+PAD, ly, v, get_item_color(v), 11)
+            ly = ly + 14
         end
+    end
+end
+
+-- Player Loot Finder: what other players are carrying
+local function draw_plf_panel()
+    if not cfg.plf then plf_panel.dragging = false return end
+    handle_drag(plf_panel, plf_panel.w)
+    local results = slf_results
+    local n = #results
+    local ph = TITLE_H + PAD
+    if n == 0 then ph = ph + LINE_H + PAD
+    else
+        for _, e in ipairs(results) do ph = ph + LINE_H + (#e.items * LINE_H) + 6 end
+        ph = ph + PAD
+    end
+    local px, py, pw = plf_panel.x, plf_panel.y, plf_panel.w
+    local title = "Player Loot Finder"
+    if n > 0 then title = title .. "  [" .. n .. "]" end
+    draw_panel_frame(px, py, pw, ph, title)
+    local ly = py + TITLE_H + PAD
+    if n == 0 then
+        draw.text(px+PAD, ly, "No players carrying valuables", COL.dim, FONT-1)
+        return
+    end
+    for i, e in ipairs(results) do
+        draw.text(px+PAD, ly, "> " .. e.name, COL.white, FONT-1)
+        ly = ly + LINE_H
+        for _, item in ipairs(e.items) do
+            draw.text(px+PAD+4, ly, "- " .. item, get_item_color(item), 11)
+            ly = ly + LINE_H
+        end
+        if i < n then draw.line(px+PAD, ly+1, px+pw-PAD, ly+1, {0.18,0.72,0.84,0.3}, 1) end
         ly = ly + 6
     end
 end
 
-local function draw_watermark()
-    if not safe_menu_get("delta_watermark_enabled") then return end
-    local text = "Made by tarkov_killa with <3 | Thank you for using my script have a good day!"
-    local fs = 13
-    local x = 10
-    local y = 62
-    local tw = 440
-    local th = 18
-    draw.rect_filled(x - 4, y - 4, tw + 8, th + 8, {0, 0, 0, 0.6}, 3)
-    draw.rect(x - 4, y - 4, tw + 8, th + 8, {0.18, 0.72, 0.84, 0.8}, 2, 1)
-    draw.text(x, y, text, {0.18, 0.72, 0.84, 1}, fs)
+local function draw_mod_panel()
+    if not cfg.mod_alert then mod_panel.dragging = false return end
+    local shown = {}
+    for _, a in ipairs(mod_list) do
+        if cfg.mod_mode == 0 then shown[#shown+1] = a
+        elseif a.is_mod then shown[#shown+1] = a end
+    end
+    if #shown == 0 then return end
+    handle_drag(mod_panel, mod_panel.w)
+    local ph = TITLE_H + PAD + (#shown * LINE_H) + PAD
+    local px, py, pw = mod_panel.x, mod_panel.y, mod_panel.w
+    draw_panel_frame(px, py, pw, ph, "Mod Alert")
+    local ly = py + TITLE_H + PAD
+    for _, a in ipairs(shown) do
+        local col = a.is_mod and {1, 0.3, 0.3, 1} or COL.white
+        local tag = a.is_mod and " [STAFF]" or (a.age < 30 and " [NEW]" or "")
+        draw.text(px+PAD, ly, a.name .. " (" .. a.age .. "d)" .. tag, col, FONT-1)
+        ly = ly + LINE_H
+    end
 end
 
+local function draw_watermark()
+    if not cfg.watermark then return end
+    local sw, sh = draw.get_screen_size()
+    local txt = "Project Delta v3 - IIamkayy + Sapphire| " .. math.floor(utility.get_fps() or 0) .. " fps"
+    local tw = draw.get_text_size(txt, 13)
+    draw.rect_filled(sw-tw-30, 5, tw+20, 20, {0.05, 0.05, 0.07, 0.85}, 3)
+    draw.rect(sw-tw-30, 5, tw+20, 20, COL.border, 3, 1)
+    draw.text(sw-tw-20, 8, txt, COL.accent, 12)
+end
+
+local function draw_crosshair()
+    if not cfg.crosshair then return end
+    local cx, cy = input.get_screen_center()
+    local style = cfg.crosshair_style
+    local sz = cfg.crosshair_size
+    local th = cfg.crosshair_thick
+    local col = cfg.crosshair_col_on and cfg.crosshair_col or {1, 1, 1, 1}
+    local outline = cfg.crosshair_outline
+    local oc = {0, 0, 0, 1}
+    if style == 0 then
+        if outline then draw.rect_filled(cx-th-1, cy-th-1, th*2+2, th*2+2, oc, 0) end
+        draw.rect_filled(cx-th, cy-th, th*2, th*2, col, 0)
+    elseif style == 1 then
+        if outline then
+            draw.line(cx-sz, cy, cx+sz, cy, oc, th+2)
+            draw.line(cx, cy-sz, cx, cy+sz, oc, th+2)
+        end
+        draw.line(cx-sz, cy, cx+sz, cy, col, th)
+        draw.line(cx, cy-sz, cx, cy+sz, col, th)
+    elseif style == 2 then
+        if outline then draw.circle(cx, cy, sz, oc, 48, th+2) end
+        draw.circle(cx, cy, sz, col, 48, th)
+    elseif style == 3 then
+        if outline then
+            draw.line(cx-sz, cy, cx+sz, cy, oc, th+2)
+            draw.line(cx, cy-sz, cx, cy+sz, oc, th+2)
+        end
+        draw.line(cx-sz, cy, cx+sz, cy, col, th)
+        draw.line(cx, cy-sz, cx, cy+sz, col, th)
+        if outline then draw.circle(cx, cy, sz, oc, 48, th+2) end
+        draw.circle(cx, cy, sz, col, 48, th)
+    end
+end
+
+-- =====================================================================
+-- AIMBOT
+-- =====================================================================
+local function process_aimbot()
+    if not cfg.aim then return end
+    if cfg.aim_draw_fov then
+        local scx, scy = input.get_screen_center()
+        draw_fov_circle(scx, scy, cfg.aim_fov, cfg.aim_fov_col, 1)
+    end
+    local key = sgk("delta_npc_aim_enabled")
+    if key == 0 then key = 0x02 end
+    if not input.is_key_down(key) then return end
+
+    local scx, scy = input.get_screen_center()
+    local bone_name = AIM_BONES[cfg.aim_bone] or "Head"
+    local best_dist = cfg.aim_fov
+    local best_tx, best_ty
+    local cam = camera.get_position()
+
+    for _, npc in ipairs(npc_cache) do
+        local ok, part = pcall(function() return npc.model:find_first_child(bone_name) end)
+        if ok and part then
+            local ok2, pos = pcall(function() return part.Position end)
+            if ok2 and pos then
+                local tx, ty, tz = pos.x, pos.y, pos.z
+                if cfg.aim_pred then
+                    local root = npc.model:find_first_child("HumanoidRootPart")
+                    if root then
+                        local ok3, vel = pcall(function() return root.Velocity end)
+                        if ok3 and vel and cam then
+                            local d = get_dist(tx,ty,tz, cam.x, cam.y, cam.z)
+                            local tt = d / 500
+                            tx = tx + vel.x * tt
+                            ty = ty + vel.y * tt
+                            tz = tz + vel.z * tt
+                        end
+                    end
+                end
+                local sx, sy, vis = draw.world_to_screen(tx, ty, tz)
+                if vis then
+                    local dd = sqrt((sx-scx)^2 + (sy-scy)^2)
+                    if dd < best_dist then best_dist = dd best_tx = sx best_ty = sy end
+                end
+            end
+        end
+    end
+
+    if best_tx and best_ty then
+        local dx = best_tx - scx
+        local dy = best_ty - scy
+        local strength = cfg.aim_smooth / 20.0
+        if math.abs(dx) < 2000 and math.abs(dy) < 2000 then
+            input.move_mouse(dx * strength, dy * strength)
+        end
+    end
+end
+
+-- =====================================================================
+-- NO RECOIL (pattern zero) + RAPID FIRE (GC)
+-- =====================================================================
+local RECOIL_PATTERN_NAMES = { "RecoilPattern", "RecoilPatternOLD", "RecoilPattern2", "RecoilPattern3", "RecoilPatternDisabled" }
+
+local function zero_recoil_patterns()
+    local rep = game.get_service("ReplicatedStorage")
+    if not rep then return end
+    local rw = rep:find_first_child("RangedWeapons")
+    if not rw then return end
+    local ok, weapons = pcall(function() return rw:get_children() end)
+    if not ok or not weapons then return end
+    for i = 1, #weapons do
+        local w = weapons[i]
+        for n = 1, #RECOIL_PATTERN_NAMES do
+            local p = w:find_first_child(RECOIL_PATTERN_NAMES[n])
+            if p then
+                local ok2, shots = pcall(function() return p:get_children() end)
+                if ok2 and shots then
+                    for j = 1, #shots do
+                        local xv = shots[j]:find_first_child("x")
+                        local yv = shots[j]:find_first_child("y")
+                        if xv then pcall(function() xv.Value = 0 end) end
+                        if yv then pcall(function() yv.Value = 0 end) end
+                    end
+                end
+            end
+        end
+    end
+end
+
+refreshgc()
+
+thread.create(function()
+    if sg("delta_no_recoil") then
+        pcall(zero_recoil_patterns)
+        pcall(function()
+            applygc(
+                { "RecoilMult", "AimSpreadMult", "HipSpreadMult" },
+                { RecoilMult = 0, AimSpreadMult = 0, HipSpreadMult = 0 }
+            )
+        end)
+    end
+    if sg("delta_fire_rate") then
+        local speed = sg("delta_fire_rate_amount") or 10
+        local ft = 0.1 - (speed / 100) * 0.099
+        pcall(function() applygc({ "FireTime" }, { FireTime = ft }) end)
+    end
+end, 100)
+
+-- Fullbright
+thread.create(function()
+    if sg("delta_fullbright") then
+        local lit = game.lighting
+        if lit then
+            pcall(function()
+                lit.Brightness = 2
+                lit.ClockTime = 14
+                lit.FogEnd = 100000
+                lit.GlobalShadows = false
+                lit.Ambient = {1, 1, 1}
+                lit.OutdoorAmbient = {1, 1, 1}
+            end)
+        end
+    end
+end, 500)
+
+-- =====================================================================
+-- MAIN FRAME
+-- =====================================================================
 local frame = 0
 
-update_mod_check()
-update_camera()
-scan_players_inv()
-slf_scan()
-update_world()
-update_npcs()
-update_bosses()
+-- initial warm-up scans
+pcall(scan_players_inv)
+pcall(refresh_npcs)
+pcall(refresh_world)
+pcall(update_bosses)
+pcall(scan_mods)
+pcall(scan_player_loot)
 
 function on_frame()
     frame = frame + 1
 
-    if frame % 6 == 0 then pcall(scan_players_inv) end
-    if frame % 30 == 0 then
-        pcall(slf_scan)
-        pcall(update_npcs)
-        pcall(update_bosses)
-    end
-    if frame % 60 == 0 then
-        pcall(zero_recoil)
-        pcall(update_mod_check)
-    end
-    if frame % 120 == 0 then pcall(update_world) end
+    -- throttled background scans (positions are read live; lists refresh on a timer)
+    if frame % 6  == 0 then pcall(scan_players_inv) end
+    if frame % 12 == 0 then pcall(refresh_npcs); pcall(refresh_world) end
+    if frame % 30 == 0 then pcall(scan_player_loot) end
+    if frame % 60 == 0 then pcall(update_bosses); pcall(scan_mods) end
 
     pcall(cache_settings)
-    pcall(update_camera)
-    pcall(draw_extracts)
-    pcall(draw_items)
-    pcall(draw_corpses)
-    pcall(draw_containers)
-    pcall(draw_quests)
-    pcall(draw_npcs)
-    pcall(draw_claymores)
-    pcall(draw_players)
-    pcall(draw_inv_panel)
-    pcall(draw_boss_panel)
-    pcall(run_aimbot)
-    pcall(draw_mod_alert)
-    pcall(draw_slf_panel)
-    pcall(draw_watermark)
+
+    draw_watermark()
+    draw_crosshair()
+    process_aimbot()
+
+    local mp = get_local_pos()
+
+    -- Player ESP
+    if cfg.player then
+        local players = entity.get_players()
+        if players then
+            for i = 1, #players do
+                local p = players[i]
+                if p and p.is_valid and not p.is_local and p.is_alive then
+                    local char = game.workspace:find_first_child(p.name)
+                    if char then
+                        local hum  = char:find_first_child_of_class("Humanoid")
+                        local root = char:find_first_child("HumanoidRootPart")
+                        if hum and root then
+                            local dist_m = 0
+                            if mp then
+                                local ok, pos = pcall(function() return root.Position end)
+                                if ok and pos then dist_m = math.floor(get_dist(mp.x,mp.y,mp.z,pos.x,pos.y,pos.z) * METERS_PER_STUD) end
+                            end
+                            if dist_m <= cfg.player_range then
+                                draw_character_esp(char, p.name, hum, root, {
+                                    box = cfg.player_box, box_col = cfg.player_box_col, box_style = cfg.player_box_style,
+                                    skeleton = cfg.player_skel, skel_col = cfg.player_skel_col,
+                                    health = cfg.player_hp, name = cfg.player_name, name_col = cfg.player_name_col,
+                                    dist = cfg.player_dist, dist_col = cfg.player_dist_col, dist_m = dist_m,
+                                    tracers = cfg.player_tracers, tracer_col = cfg.player_tracer_col,
+                                })
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    -- NPC ESP
+    if cfg.npc then
+        for _, npc in ipairs(npc_cache) do
+            local root = npc.model:find_first_child("HumanoidRootPart")
+            local dist_m = 0
+            if mp and root then
+                local ok, pos = pcall(function() return root.Position end)
+                if ok and pos then dist_m = math.floor(get_dist(mp.x,mp.y,mp.z,pos.x,pos.y,pos.z) * METERS_PER_STUD) end
+            end
+            if dist_m <= cfg.npc_range then
+                draw_character_esp(npc.model, npc.model.name, npc.hum, root, {
+                    box = cfg.npc_box, box_col = cfg.npc_box_col, box_style = cfg.npc_box_style,
+                    skeleton = cfg.npc_skel, skel_col = cfg.npc_skel_col,
+                    health = cfg.npc_hp, name = cfg.npc_name, name_col = cfg.npc_name_col,
+                    dist = cfg.npc_dist, dist_col = cfg.npc_dist_col, dist_m = dist_m,
+                    tracers = false,
+                })
+            end
+        end
+    end
+
+    -- World ESP
+    if cfg.extract   then for _, it in ipairs(world_cache.extracts)    do draw_world_item(it, cfg.extract_range,   cfg.extract_col,   cfg.extract_box,   nil) end end
+    if cfg.container then for _, it in ipairs(world_cache.containers)  do draw_world_item(it, cfg.container_range, cfg.container_col, cfg.container_box, cfg.container_contents and it.contents or nil) end end
+    if cfg.quest     then for _, it in ipairs(world_cache.quests)      do draw_world_item(it, cfg.quest_range,     cfg.quest_col,     cfg.quest_box,     nil) end end
+    if cfg.items     then for _, it in ipairs(world_cache.items)       do draw_world_item(it, cfg.items_range,     cfg.items_col,     cfg.items_box,     nil) end end
+    if cfg.corpse    then for _, it in ipairs(world_cache.corpses)     do draw_world_item(it, cfg.corpse_range,    cfg.corpse_col,    cfg.corpse_box,    cfg.corpse_contents and it.contents or nil) end end
+    draw_claymores()
+
+    -- Panels
+    draw_inv_panel()
+    draw_boss_panel()
+    draw_wlf_panel()
+    draw_plf_panel()
+    draw_mod_panel()
+end
+
+-- player-join hook keeps mod list responsive even between scans
+function on_player_added(player)
+    pcall(scan_mods)
 end
 
 load_config()
 
-print("fully ud as of 3/19/2026")
-print("Project Delta fully loaded have fun :>")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- #################################################
--- ############---PROJECT DELTA SCRIPT V3---########
--- #################################################
-
-
-
-
-
-
-
-
-
-
--- features added in V3
--- Mod Alert / Watermark / Loot Finder / FIXED CONFIG
-
-
-
--- *PLEASE SAY THANK YOU IT MOTIVATES ME TO UPDATE!*
-
--- if something doesnt work feel free to DM me or make a ticket in my discord in bio or join .gg/n2NBrewT4C
-
--- thank you for using my script <3
--- have a good day :D take this script and add my no recoil to it
-
+print("[Project Delta v3] Loaded - combined suite, 0 duplicates.")
+print("Credit: tarkov_killa base. Have fun :>")
